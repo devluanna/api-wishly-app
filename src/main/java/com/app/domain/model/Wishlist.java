@@ -12,4 +12,6 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_wishlist;
     private String name;
+
+    
 }
