@@ -4,12 +4,10 @@ import com.app.domain.model.ResponseDTO.UserDTO;
 import com.app.domain.model.Users;
 import com.app.domain.repository.UserRepository;
 import com.app.exception.BusinessRuleException;
-import com.app.service.PasswordService;
 import com.app.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +18,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     PasswordServiceImpl passwordService;
@@ -37,15 +32,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserById(id_user);
     }
 
-    public void validatePasswordUser() {
-
-    }
 
     @Override
     @Transactional
     public UserDTO createNewUser(Users user, UserDTO newUser) {
-        userValidationUsername(user);
-        userValidationEmail(user);
+        validationUsername(user);
+        validationEmail(user);
 
         passwordService.validationsPassword(user.getPassword(), user.getConfirm_password());
         String encryptedPassword = passwordService.encryptPassword(user.getPassword());
@@ -103,12 +95,20 @@ public class UserServiceImpl implements UserService {
 
         Users selectedUser = findById(id_user);
 
-        savingNewUpdatesInTheField(userAccount, selectedUser, updateUserDTO);
+        selectedUser.setFirst_name(updateUserDTO.first_name());
+        selectedUser.setLast_name(updateUserDTO.last_name());
+        selectedUser.setEmail(updateUserDTO.email());
+        selectedUser.setUsername(updateUserDTO.username());
+        selectedUser.setDate_birthday(updateUserDTO.date_birthday());
+        selectedUser.setGender(updateUserDTO.gender());
+
+        savingNewUpdatesInTheField(userAccount, selectedUser);
 
         Users savedNewInfoUser = userRepository.save(userAccount);
 
         return responseUpdateUserDTO(savedNewInfoUser);
     }
+
 
     public UpdateUserDTO responseUpdateUserDTO(Users savedNewInfoUser) {
         UpdateUserDTO UpdateDTO = new UpdateUserDTO(
@@ -125,19 +125,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void selectedUserFieldsDTO(Users selectedUser, UpdateUserDTO updateUserDTO) {
-        selectedUser.setFirst_name(updateUserDTO.first_name());
-        selectedUser.setLast_name(updateUserDTO.last_name());
-        selectedUser.setEmail(updateUserDTO.email());
-        selectedUser.setUsername(updateUserDTO.username());
-        selectedUser.setDate_birthday(updateUserDTO.date_birthday());
-        selectedUser.setGender(updateUserDTO.gender());
 
-    }
-
-    public void savingNewUpdatesInTheField(Users users, Users selectedUser, UpdateUserDTO updateUserDTO) {
-
-        selectedUserFieldsDTO(selectedUser, updateUserDTO);
+    // To not return null, if the user updates only 1 field/attribute
+    public void savingNewUpdatesInTheField(Users users, Users selectedUser) {
 
         if(selectedUser.getFirst_name() != null) {
             users.setFirst_name(selectedUser.getFirst_name());
@@ -165,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
     // Validations
 
-    private void userValidationEmail(Users user) {
+    private void validationEmail(Users user) {
         Users existingEmail = userRepository.findByEmail(user.getEmail());
 
         if (existingEmail != null) {
@@ -174,7 +164,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void userValidationUsername(Users user) {
+    private void validationUsername(Users user) {
         Users existingUsername = userRepository.findByUsername(user.getUsername());
 
         if (existingUsername != null) {
