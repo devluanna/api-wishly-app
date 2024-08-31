@@ -10,8 +10,6 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    //"Service" responsável pela comunicação com o Outlook, para envio do email após o registo.
-    //"Service" responsible for communicating with outlook, to send the email after registration.
     public void sendEmail(String to, String subject, String body) {
 
         Properties properties = new Properties();
@@ -21,8 +19,8 @@ public class MailConfig {
         properties.put("mail.smtp.starttls.enable", "true");
 
 
-        final String username = "email@email";
-        final String password = "password";
+        final String username = "admnsuportwishlyapi@outlook.com.br";
+        final String password = "wishly@123";
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override

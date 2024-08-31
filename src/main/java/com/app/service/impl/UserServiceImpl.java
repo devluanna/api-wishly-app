@@ -1,6 +1,7 @@
 package com.app.service.impl;
 import com.app.domain.model.ResponseDTO.UpdateUserDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
+import com.app.domain.model.Status;
 import com.app.domain.model.Users;
 import com.app.domain.repository.UserRepository;
 import com.app.exception.BusinessRuleException;
@@ -8,7 +9,8 @@ import com.app.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -109,7 +111,6 @@ public class UserServiceImpl implements UserService {
         return responseUpdateUserDTO(savedNewInfoUser);
     }
 
-
     public UpdateUserDTO responseUpdateUserDTO(Users savedNewInfoUser) {
         UpdateUserDTO UpdateDTO = new UpdateUserDTO(
                 savedNewInfoUser.getId_user(),
@@ -153,8 +154,30 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // Validations
 
+    @Override
+    public Users disableAccount(Users user, Integer id_user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new BusinessRuleException("Authentication is required to disable your account.", HttpStatus.BAD_REQUEST);
+        }
+
+        Users authenticatedUser = (Users) authentication.getPrincipal();
+
+        if (!authenticatedUser.getId_user().equals(id_user)) {
+            throw new BusinessRuleException("Access denied!", HttpStatus.BAD_REQUEST);
+        }
+
+        user.setStatus(Status.valueOf("DISABLED"));
+        user.setPassword(null);
+
+        return userRepository.save(user);
+
+    }
+
+
+    // Validations
     private void validationEmail(Users user) {
         Users existingEmail = userRepository.findByEmail(user.getEmail());
 

@@ -31,6 +31,8 @@ public class Users implements UserDetails {
     private UserRole role;
     private Status status;
     private String code_recovery_password;
+    private String code_account_activation;
+    private String confirm_code_activation;
 
     public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status) {
         this.first_name = first_name;
@@ -43,7 +45,6 @@ public class Users implements UserDetails {
         this.confirm_password = confirm_password;
         this.role = UserRole.valueOf("USER");
         this.status = Status.valueOf("ACTIVATED");
-
     }
 
 

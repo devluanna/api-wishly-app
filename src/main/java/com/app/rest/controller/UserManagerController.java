@@ -1,10 +1,7 @@
 package com.app.rest.controller;
 
 
-import com.app.domain.model.ResponseDTO.PasswordDTO;
-import com.app.domain.model.ResponseDTO.RecoveryPasswordDTO;
-import com.app.domain.model.ResponseDTO.UpdateUserDTO;
-import com.app.domain.model.ResponseDTO.UserDTO;
+import com.app.domain.model.ResponseDTO.*;
 import com.app.domain.model.Users;
 import com.app.service.PasswordService;
 import com.app.service.UserService;
@@ -68,12 +65,28 @@ public class UserManagerController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody RecoveryPasswordDTO recoveryDTO, String email, Users user) {
+    public ResponseEntity<String> resetPassword(@RequestBody AccountRecoveryDTO recoveryDTO, String email, Users user) {
 
         passwordService.recoveryPassword(user, recoveryDTO, email);
 
         return ResponseEntity.ok("Please check your email. Password Recovery Token has been sent!");
     }
+
+    @PutMapping("/disable/{id_user}")
+    public ResponseEntity disableAccount(@PathVariable Integer id_user) {
+        try {
+            Users user = userService.findById(id_user);
+
+            userService.disableAccount(user, id_user);
+            return ResponseEntity.ok("Account successfully deactivated!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+
+
 
 
 }

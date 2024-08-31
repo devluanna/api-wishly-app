@@ -1,15 +1,11 @@
 package com.app.service.impl;
 
 import com.app.domain.model.ResponseDTO.PasswordDTO;
-import com.app.domain.model.ResponseDTO.RecoveryPasswordDTO;
-import com.app.domain.model.ResponseDTO.UserDTO;
+import com.app.domain.model.ResponseDTO.AccountRecoveryDTO;
 import com.app.domain.model.Users;
 import com.app.domain.repository.UserRepository;
 import com.app.exception.BusinessRuleException;
 import com.app.service.PasswordService;
-import com.app.service.UserService;
-import com.app.utils.MailConfig;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -23,33 +19,42 @@ public class PasswordServiceImpl implements PasswordService {
 
     @Autowired
     UserRepository usersRepository;
-
     @Autowired
-    MailConfig emailService;
+    ActivationRecoveryCodeServiceImpl codeService;
     private static final int MIN_PASSWORD_LENGTH = 8;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Users recoveryPassword(Users user, RecoveryPasswordDTO recoveryDTO, String email) {
-
+    public Users recoveryPassword(Users user, AccountRecoveryDTO recoveryDTO, String email) {
         Users existingUser = usersRepository.findByEmail(recoveryDTO.email());
 
         if (existingUser != null) {
-            String tokenRecoveryUser = generateTokenRecovery();
 
-            String encryptedPassword = passwordEncoder.encode(tokenRecoveryUser);
-            existingUser.setCode_recovery_password(encryptedPassword);
-            usersRepository.save(existingUser);
-
-            usersRepository.save(existingUser);
-
-            //SendingTheRecoveryEmail(existingUser, tokenRecoveryUser);
+           // sendEmailRecovery(existingUser);
 
             return existingUser;
         } else {
             throw new BusinessRuleException("Email does not match any user's email.", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public void sendEmailRecovery(Users existingUser) {
+        String tokenRecoveryUser = codeService.generateToken(6);
+        String encryptedPassword = passwordEncoder.encode(tokenRecoveryUser);
+        existingUser.setCode_recovery_password(encryptedPassword);
+
+        usersRepository.save(existingUser);
+
+        String subject = "Wishly App - Password Recovery.";
+        String emailBody = "Phew!!! You're back!" + " " + existingUser.getFirst_name() + " " + existingUser.getLast_name() +
+                ",\n\nWelcome back!\n\n" +
+                "Remember to reset and make your password strong for security.\n\n" +
+                "Here is your information for recovering and updating your new password.\n\n" +
+                "Login identity: " + existingUser.getUsername() + "\n" +
+                "Token for Recovery: " + tokenRecoveryUser;
+
+        codeService.sendEmailWithToken(existingUser.getEmail(), subject, emailBody);
     }
 
     @Override
@@ -82,33 +87,6 @@ public class PasswordServiceImpl implements PasswordService {
     }
 
 
-
-    private void SendingTheRecoveryEmail(UserDTO users, Users savedUser, String tokenRecoveryUser) {
-        String subject = "Phew!!! It's so good to see you here again :')";
-        String emailBody = "Hello! " + users.first_name() + " " + users.last_name() + ",\n\nWelcome back!\n\n" +
-                "\n\nRemember to reset your password and make your profile as updated and complete as possible.\n\n" +
-                "Here is your information for recovering and updating your new password.\n\n" +
-                "Login identity: " + savedUser.getUsername() + "\n" +
-                "Token for recovery: " + tokenRecoveryUser;
-
-        emailService.sendEmail(users.email(), subject, emailBody);
-    }
-
-
-    @Transactional
-    private String generateTokenRecovery() {
-
-        String characters = "0123456789";
-        StringBuilder identity = new StringBuilder();
-        int length = 6;
-
-        for (int i = 0; i < length; i++) {
-            int index = (int) (Math.random() * characters.length());
-            identity.append(characters.charAt(index));
-        }
-
-        return identity.toString();
-    }
 
     // Validations
 
