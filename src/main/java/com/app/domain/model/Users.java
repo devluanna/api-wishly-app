@@ -1,23 +1,21 @@
 package com.app.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
-@Entity
 @Data
+@Entity
+@Setter
+@Getter
 @NoArgsConstructor
-public class User implements UserDetails {
+public class Users implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,9 +28,11 @@ public class User implements UserDetails {
     private String gender;
     private String password;
     private String confirm_password;
-    private Integer code_recovery_password;
+    private UserRole role;
+    private Status status;
+    private String code_recovery_password;
 
-    public User (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password) {
+    public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -40,20 +40,28 @@ public class User implements UserDetails {
         this.date_birthday = date_birthday;
         this.gender = gender;
         this.password = password;
+        this.confirm_password = confirm_password;
+        this.role = UserRole.valueOf("USER");
+        this.status = Status.valueOf("ACTIVATED");
+
     }
 
-    public Integer getId_user() {
-        return id_user;
+
+    public Users(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
@@ -63,21 +71,23 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
+
+
 }

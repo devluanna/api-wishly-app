@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(antMatcher(HttpMethod.POST, "/auth/login")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/user/register")).permitAll()
-                        //.requestMatchers(HttpMethod.PUT, "/auth/password/{id_user}").authenticated()
+                       // .requestMatchers(HttpMethod.PUT, "/user/password/{id_user}").authenticated()
                         //.requestMatchers(antMatcher(HttpMethod.GET, "/api/person/list-users")).hasRole("RH")
                         //.requestMatchers(antMatcher(HttpMethod.GET, "/api/user/{id_user}")).permitAll()
                         .anyRequest().authenticated()

@@ -1,13 +1,16 @@
 package com.app.service;
 
+import com.app.domain.model.ResponseDTO.UpdateUserDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
-import com.app.domain.model.User;
+import com.app.domain.model.Users;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-    UserDTO createNewUser(UserDTO newUser, User user);
+    UserDTO createNewUser(Users user, UserDTO newUser);
 
-    User findById(Integer id_user);
+    Users findById(Integer id_user);
     UserDTO getUserById(Integer id_user);
+
+    UpdateUserDTO toUpdateUser(Users userAccount, Integer idUser, UpdateUserDTO updateUserDTO);
 }

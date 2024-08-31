@@ -1,19 +1,21 @@
 package com.app.infra.security;
 
-import com.app.domain.model.User;
+import com.app.domain.model.Users;
+
 import com.app.service.impl.AuthorizationServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 public class SecurityFilter extends OncePerRequestFilter {
 
 
@@ -22,6 +24,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
     AuthorizationServiceImpl authorizationService;
+
 
 
     @Override
@@ -35,9 +38,9 @@ public class SecurityFilter extends OncePerRequestFilter {
                 throw new IllegalArgumentException("Invalid user ID in token");
             }
 
-            User user = (User) authorizationService.loadUserById(Integer.valueOf(id_user));
+            Users user = (Users) authorizationService.loadUserById(Integer.valueOf(id_user));
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null);
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

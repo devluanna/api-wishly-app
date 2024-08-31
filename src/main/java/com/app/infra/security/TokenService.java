@@ -1,6 +1,6 @@
 package com.app.infra.security;
 
-import com.app.domain.model.User;
+import com.app.domain.model.Users;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -17,7 +17,7 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
-    public String generateToken(User userAccount) {
+    public String generateToken(Users userAccount) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
