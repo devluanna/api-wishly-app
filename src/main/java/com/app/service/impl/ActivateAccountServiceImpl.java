@@ -35,17 +35,18 @@ public class ActivateAccountServiceImpl implements ActivateAccountService {
             throw new BusinessRuleException("Email invalid", HttpStatus.BAD_REQUEST);
         }
 
-
         existingUser.setConfirm_code_activation(activeAccountDTO.confirm_code_activation());
 
         userRepository.save(existingUser);
 
         if (user.getConfirm_code_activation() != null && user.getConfirm_code_activation().equals(existingUser.getCode_account_activation())) {
-            System.out.println("Código válido!");
 
+            passwordService.validationsPassword(user.getPassword(), user.getConfirm_password());
+            String encryptedNewPassword = passwordService.encryptPassword(user.getPassword());
+            String encryptedConfirmNewPassword = passwordService.encryptPassword(user.getConfirm_password());
 
-            existingUser.setPassword(user.getPassword());
-            existingUser.setConfirm_password(user.getConfirm_password());
+            existingUser.setPassword(encryptedNewPassword);
+            existingUser.setConfirm_password(encryptedConfirmNewPassword);
             existingUser.setConfirm_code_activation(user.getConfirm_code_activation());
 
 

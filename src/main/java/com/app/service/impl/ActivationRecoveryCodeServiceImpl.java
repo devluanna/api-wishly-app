@@ -4,6 +4,10 @@ import com.app.utils.MailConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+
 @Service
 public class ActivationRecoveryCodeServiceImpl {
 
@@ -25,4 +29,9 @@ public class ActivationRecoveryCodeServiceImpl {
     public void sendEmailWithToken(String emailAddress, String subject, String body) {
         emailService.sendEmail(emailAddress, subject, body);
     }
+
+    private Date genExpirationCode(){
+        return Date.from(LocalDateTime.now().plusMinutes(20).toInstant(ZoneOffset.of("-03:00")));
+    }
+
 }
