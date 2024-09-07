@@ -2,6 +2,7 @@ package com.app.service.impl;
 
 import com.app.domain.model.ResponseDTO.PasswordDTO;
 import com.app.domain.model.ResponseDTO.AccountRecoveryDTO;
+import com.app.domain.model.Status;
 import com.app.domain.model.Users;
 import com.app.domain.repository.UserRepository;
 import com.app.exception.BusinessRuleException;
@@ -20,7 +21,10 @@ public class PasswordServiceImpl implements PasswordService {
     @Autowired
     UserRepository usersRepository;
     @Autowired
-    ActivationRecoveryCodeServiceImpl codeService;
+    RecoveryCodeServiceImpl codeService;
+
+    @Autowired
+    ActivateAccountServiceImpl activateAccountServiceImpl;
     private static final int MIN_PASSWORD_LENGTH = 8;
 
     @Autowired
@@ -29,32 +33,14 @@ public class PasswordServiceImpl implements PasswordService {
     public Users recoveryPassword(Users user, AccountRecoveryDTO recoveryDTO, String email) {
         Users existingUser = usersRepository.findByEmail(recoveryDTO.email());
 
-        if (existingUser != null) {
+        if (existingUser != null && existingUser.getStatus().equals(Status.valueOf("ACTIVATED"))) {
 
-           // sendEmailRecovery(existingUser);
+           // activateAccountServiceImpl.sendEmailRecovery(existingUser);
 
             return existingUser;
         } else {
             throw new BusinessRuleException("Email does not match any user's email.", HttpStatus.BAD_REQUEST);
         }
-    }
-
-    public void sendEmailRecovery(Users existingUser) {
-        String tokenRecoveryUser = codeService.generateToken(6);
-        String encryptedPassword = passwordEncoder.encode(tokenRecoveryUser);
-        existingUser.setCode_recovery_password(encryptedPassword);
-
-        usersRepository.save(existingUser);
-
-        String subject = "Wishly App - Password Recovery.";
-        String emailBody = "Phew!!! You're back!" + " " + existingUser.getFirst_name() + " " + existingUser.getLast_name() +
-                ",\n\nWelcome back!\n\n" +
-                "Remember to reset and make your password strong for security.\n\n" +
-                "Here is your information for recovering and updating your new password.\n\n" +
-                "Login identity: " + existingUser.getUsername() + "\n" +
-                "Token for Recovery: " + tokenRecoveryUser;
-
-        codeService.sendEmailWithToken(existingUser.getEmail(), subject, emailBody);
     }
 
     @Override

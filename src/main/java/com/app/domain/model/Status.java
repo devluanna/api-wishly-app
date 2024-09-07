@@ -1,5 +1,6 @@
 package com.app.domain.model;
 
+
 public enum Status {
 
     ACTIVATED("ACTIVATED"),
