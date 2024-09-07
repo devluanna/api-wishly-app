@@ -9,8 +9,9 @@ import com.app.exception.BusinessRuleException;
 import com.app.service.ActivateAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class ActivateAccountServiceImpl implements ActivateAccountService {
@@ -20,8 +21,6 @@ public class ActivateAccountServiceImpl implements ActivateAccountService {
 
     @Autowired
     RecoveryCodeServiceImpl codeService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     PasswordServiceImpl passwordService;
@@ -33,6 +32,10 @@ public class ActivateAccountServiceImpl implements ActivateAccountService {
 
         if (existingUser == null) {
             throw new BusinessRuleException("Invalid email", HttpStatus.BAD_REQUEST);
+        }
+
+        if (codeService.isTokenExpired(existingUser.getTokenExpiration())) {
+            throw new BusinessRuleException("The activation token has expired.", HttpStatus.BAD_REQUEST);
         }
 
         validateActivationCode(existingUser, user);
@@ -86,11 +89,13 @@ public class ActivateAccountServiceImpl implements ActivateAccountService {
         Users existingUser = userRepository.findByEmail(accountDTO.email());
 
        if (existingUser != null && existingUser.getStatus().equals(Status.DISABLED)) {
-           // if (existingUser != null){
-            String tokenRecoveryUser = codeService.generateToken(6);
-            //String encryptedPassword = passwordEncoder.encode(tokenRecoveryUser);
 
-            existingUser.setCode_account_activation(tokenRecoveryUser);
+           String tokenRecoveryUser = codeService.generateToken(6);
+           Date tokenExpiration = codeService.generateTokenExpiration();
+
+           existingUser.setCode_account_activation(tokenRecoveryUser);
+           existingUser.setTokenExpiration(tokenExpiration);
+
             System.out.println("TOKEN PRA ATIVAR A CONTA:" + tokenRecoveryUser);
 
             userRepository.save(existingUser);
@@ -106,9 +111,8 @@ public class ActivateAccountServiceImpl implements ActivateAccountService {
 
     public void sendEmailRecovery(Users existingUser) {
         String tokenRecoveryUser = codeService.generateToken(6);
-        String encryptedPassword = passwordEncoder.encode(tokenRecoveryUser);
 
-        existingUser.setCode_account_activation(encryptedPassword);
+        existingUser.setCode_account_activation(tokenRecoveryUser);
 
         String activationLink = "https://wishly.com/activate-account?email=" + existingUser.getEmail();
 

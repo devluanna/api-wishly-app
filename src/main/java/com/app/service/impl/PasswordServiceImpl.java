@@ -35,7 +35,7 @@ public class PasswordServiceImpl implements PasswordService {
 
         if (existingUser != null && existingUser.getStatus().equals(Status.valueOf("ACTIVATED"))) {
 
-           // activateAccountServiceImpl.sendEmailRecovery(existingUser);
+            activateAccountServiceImpl.sendEmailRecovery(existingUser);
 
             return existingUser;
         } else {

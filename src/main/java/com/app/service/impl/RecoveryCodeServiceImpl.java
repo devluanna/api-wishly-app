@@ -30,4 +30,12 @@ public class RecoveryCodeServiceImpl {
         emailService.sendEmail(emailAddress, subject, body);
     }
 
+    public Date generateTokenExpiration() {
+        return Date.from(LocalDateTime.now().plusMinutes(20).toInstant(ZoneOffset.UTC));
+    }
+
+    public boolean isTokenExpired(Date expirationDate) {
+        return expirationDate.before(new Date());
+    }
+
 }

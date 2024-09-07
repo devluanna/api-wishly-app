@@ -34,6 +34,7 @@ public class Users implements UserDetails {
     private String code_account_activation;
     private String confirm_code_activation;
     private Boolean tokenValidate;
+    private Date tokenExpiration;
 
     public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status) {
         this.first_name = first_name;
