@@ -1,8 +1,10 @@
 package com.app.service.impl;
+import com.app.domain.model.ConnectionsDashboard;
 import com.app.domain.model.ResponseDTO.UpdateUserDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
 import com.app.domain.model.Status;
 import com.app.domain.model.Users;
+import com.app.domain.repository.ConnectionsDashboardRepository;
 import com.app.domain.repository.UserRepository;
 import com.app.exception.BusinessRuleException;
 import com.app.service.UserService;
@@ -24,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordServiceImpl passwordService;
 
+    @Autowired
+    ConnectionsDashboardRepository connectionsRepository;
+
 
     @Override
     public Users findById(Integer id_user) {
@@ -37,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO createNewUser(Users user, UserDTO newUser) {
+    public UserDTO createNewUser(Users user, UserDTO newUser, ConnectionsDashboard connections) {
         validationUsername(user);
         validationEmail(user);
 
@@ -55,7 +60,8 @@ public class UserServiceImpl implements UserService {
                 encryptedPassword,
                 encryptedConfirmPassword,
                 newUser.role(),
-                newUser.status()
+                newUser.status(),
+                connections
         );
 
 
@@ -66,11 +72,26 @@ public class UserServiceImpl implements UserService {
         userCreated.setUsername(user.getUsername());
         userCreated.setDate_birthday(user.getDate_birthday());
         userCreated.setGender(user.getGender());
-
+        userCreated.setConnectionsDashboard(connections);
 
         Users savedUser = userRepository.save(userCreated);
 
+        validateFieldsConnectionsDashboard(connections, userCreated);
+
         return responseRegisterUserDTO(savedUser);
+
+    }
+
+    public void validateFieldsConnectionsDashboard(ConnectionsDashboard connections, Users userCreated) {
+
+        if(userCreated != null) {
+            connections.setId_responsible_user(userCreated.getId_user());
+            connections.setResponsible_username(userCreated.getUsername());
+            connections.setResponsible_user_email(userCreated.getEmail());
+
+            connectionsRepository.save(connections);
+
+        }
 
     }
 
@@ -85,7 +106,8 @@ public class UserServiceImpl implements UserService {
                 savedUser.getGender(),
                 savedUser.getPassword(),
                 savedUser.getRole(),
-                savedUser.getStatus()
+                savedUser.getStatus(),
+                savedUser.getConnectionsDashboard().getId_dashboard()
         );
 
         return userDto;

@@ -12,8 +12,6 @@ import java.util.List;
 
 @Data
 @Entity
-@Setter
-@Getter
 @NoArgsConstructor
 public class Users implements UserDetails {
 
@@ -36,7 +34,12 @@ public class Users implements UserDetails {
     private Boolean tokenValidate;
     private Date tokenExpiration;
 
-    public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status) {
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_dashboard")
+    private ConnectionsDashboard connectionsDashboard;
+
+    public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status, ConnectionsDashboard connectionsDashboard) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -47,6 +50,7 @@ public class Users implements UserDetails {
         this.confirm_password = confirm_password;
         this.role = UserRole.valueOf("USER");
         this.status = Status.valueOf("ACTIVATED");
+        this.connectionsDashboard = connectionsDashboard;
     }
 
 

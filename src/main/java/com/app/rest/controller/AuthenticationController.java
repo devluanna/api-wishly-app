@@ -1,5 +1,6 @@
 package com.app.rest.controller;
 
+import com.app.domain.model.ConnectionsDashboard;
 import com.app.domain.model.ResponseDTO.AuthenticationDTO;
 import com.app.domain.model.ResponseDTO.ResponseTokenDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
@@ -45,9 +46,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("register")
-    public ResponseEntity register(@RequestBody Users user, UserDTO newUser) {
+    public ResponseEntity register(@RequestBody Users user, UserDTO newUser, ConnectionsDashboard connections) {
 
-        UserDTO userCreated = userService.createNewUser(user, newUser);
+        UserDTO userCreated = userService.createNewUser(user, newUser, connections);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class ActivateAccountServiceImpl implements ActivateAccountService {
+public class RecoveryAccountServiceImpl implements ActivateAccountService {
 
     @Autowired
     UserRepository userRepository;

@@ -4,8 +4,7 @@ package com.app.domain.model.ResponseDTO;
 import com.app.domain.model.Status;
 import com.app.domain.model.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
 
 
 import java.util.Date;
@@ -21,7 +20,9 @@ public record UserDTO(
         String gender,
         String password,
         UserRole role,
-        Status status
+        Status status,
+
+        Integer id_dashboard
 ) {
 
 

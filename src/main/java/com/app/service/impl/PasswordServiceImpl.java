@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,22 +19,19 @@ public class PasswordServiceImpl implements PasswordService {
 
     @Autowired
     UserRepository usersRepository;
-    @Autowired
-    RecoveryCodeServiceImpl codeService;
 
     @Autowired
-    ActivateAccountServiceImpl activateAccountServiceImpl;
+    RecoveryAccountServiceImpl recoveryAccountServiceImpl;
     private static final int MIN_PASSWORD_LENGTH = 8;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     public Users recoveryPassword(Users user, AccountRecoveryDTO recoveryDTO, String email) {
         Users existingUser = usersRepository.findByEmail(recoveryDTO.email());
 
         if (existingUser != null && existingUser.getStatus().equals(Status.valueOf("ACTIVATED"))) {
 
-            activateAccountServiceImpl.sendEmailRecovery(existingUser);
+            recoveryAccountServiceImpl.sendEmailRecovery(existingUser);
 
             return existingUser;
         } else {
