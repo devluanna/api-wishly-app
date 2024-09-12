@@ -32,7 +32,7 @@ public class ConnectionsDashboardController {
     public ResponseEntity approveConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers
                                                               ) {
         RequestsByOthers updatedConnection = connectionsService.approveConnectionRequest(responseRequestDTO, connections, requestsByOthers);
-        return ResponseEntity.ok(updatedConnection);
+        return ResponseEntity.ok("Request approved successfully!");
     }
 
 

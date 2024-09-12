@@ -129,7 +129,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
 
-
+    @Transactional
     public RequestsByOthers approveConnectionRequest(UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers) {
 
         Users authenticatedUser = AuthenticationUtils.validateUser(() -> responseRequestDTO.approval_user_id());
@@ -141,20 +141,21 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         RequestsByOthers requestExist = existingConnectionsRequests.stream()
                 .filter(req -> req.getId_user_requestor().equals(responseRequestDTO.id_user_requester()))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("USUARIO SOLICITANTE not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         requestExist.setStatusConnections(StatusConnections.APPROVEDBYME);
 
-        completionTheRequest(requestExist, authenticatedUser, connections, requestsByOthers,dashboardUser);
+        completionTheRequest(requestExist, authenticatedUser, connections, dashboardUser);
 
-        requestsByOthersRepository.save(requestExist);
+        requestsByOthersRepository.deleteByIdRequestsPending(requestExist.getId_requests_pending());
+
         dashboardRepository.save(dashboardUser);
 
         return requestExist;
 
     }
-
-    public void completionTheRequest(RequestsByOthers requestExist, Users authenticatedUser, Connections connections, RequestsByOthers requestsByOthers, ConnectionsDashboard dashboardUser) {
+    @Transactional
+    public void completionTheRequest(RequestsByOthers requestExist, Users authenticatedUser, Connections connections, ConnectionsDashboard dashboardUser) {
         Integer id_user = requestExist.getId_user_requestor();
         Users userExist = userRepository.findById(id_user)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -175,6 +176,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
         connectionsRepository.save(completionRequest);
         dashboardRepository.save(dashboardUser);
+
     }
 
 
