@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 
 import java.util.Date;
 
 @Data
 @Entity
+@ToString(onlyExplicitlyIncluded = true)
 @JsonPropertyOrder({ "id", "id_responsible_request", "id_dashboard_request", "username", "id_dashboard_user", "statusConnections", "profileIsOpenForConnections", "connection_date",})
 public class Connections {
 
@@ -33,6 +35,7 @@ public class Connections {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard")
+    @ToString.Exclude
     private ConnectionsDashboard dashboard;
 
 

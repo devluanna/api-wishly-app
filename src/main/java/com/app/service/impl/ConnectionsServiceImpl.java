@@ -2,12 +2,14 @@ package com.app.service.impl;
 
 import com.app.domain.model.*;
 import com.app.domain.model.ResponseDTO.ConnectionRequestDTO;
-import com.app.domain.model.ResponseDTO.UpdateRequestDTO;
+import com.app.domain.model.ResponseDTO.RemoveConnectionDTO;
 import com.app.domain.repository.*;
 import com.app.exception.BusinessRuleException;
 import com.app.service.ConnectionsService;
 import com.app.utils.AuthenticationUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     RequestsByOthersRepository requestsByOthersRepository;
     @Autowired
     RequestsByYouRepository requestsByYouRepository;
+
+    @Autowired
+    ConnectionsRepository connectionsRepository;
 
 
     private static Users userValidation(ConnectionRequestDTO requestDTO) {
@@ -88,8 +93,6 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         return newConnection;
     }
 
-
-
     private RequestsByYou requesterConnection(Users userToAdd, ConnectionsDashboard dashboard, RequestsByYou requestsByYou) {
 
         RequestsByYou newRequest = new RequestsByYou();
@@ -128,10 +131,72 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
     @Override
-    public Connections removeConnection(UpdateRequestDTO responseRequestDTO, Connections connections) {
-        return null;
+    @Transactional
+    public void removeConnection(RemoveConnectionDTO responseRequestDTO, Connections connections){
+    Users authenticatedUser = AuthenticationUtils.validateUser(() -> responseRequestDTO.id_user_requester());
+
+    ConnectionsDashboard dashboardUser = authenticatedUser.getConnectionsDashboard();
+
+    removeBetweenConnection(responseRequestDTO.user_id(), dashboardUser);
+
+
+    Users userToRemove = userRepository.findById(responseRequestDTO.user_id())
+            .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    ConnectionsDashboard dashboardUserToRemove = userToRemove.getConnectionsDashboard();
+
+    removeBetweenConnection(responseRequestDTO.id_user_requester(), dashboardUserToRemove);
+
+    }
+
+    @Transactional
+    private void removeBetweenConnection(Integer userIdToRemove, ConnectionsDashboard dashboardUser) {
+        List<Connections> existingConnectionsRequests = dashboardUser.getConnections();
+
+        Connections connectionToRemove = existingConnectionsRequests.stream()
+                .filter(req -> req.getId_user_connection().equals(userIdToRemove))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Request not found"));
+
+        existingConnectionsRequests.remove(connectionToRemove);
+
+        dashboardUser.setCount_friends(existingConnectionsRequests.size());
+
+        dashboardRepository.save(dashboardUser);
+        connectionsRepository.delete(connectionToRemove);
     }
 
 
+/*    @Transactional
+    private void removeMyConnection(Integer requesterId, ConnectionsDashboard dashboardUser) {
+        List<Connections> existingConnectionsRequests = dashboardUser.getConnections();
 
+        Connections requestExist = existingConnectionsRequests.stream()
+                .filter(req -> req.getId_user_connection().equals(requesterId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Request not found in RequestsByOthers"));
+
+
+        existingConnectionsRequests.remove(requestExist);
+
+
+        dashboardRepository.save(dashboardUser);
+        connectionsRepository.delete(requestExist);
+    }
+
+    @Transactional
+    private void removeConnectionsOther(Integer requestedId, ConnectionsDashboard dashboardUser) {
+        List<Connections> existingConnectionsRequests = dashboardUser.getConnections();
+
+        Connections requestExist = existingConnectionsRequests.stream()
+                .filter(req -> req.getId_user_connection().equals(requestedId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Request not found in RequestsByOthers"));
+
+
+        existingConnectionsRequests.remove(requestExist);
+
+
+        dashboardRepository.save(dashboardUser);
+        connectionsRepository.delete(requestExist);
+    }*/
 }

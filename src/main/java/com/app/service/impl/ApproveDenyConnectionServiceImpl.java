@@ -105,10 +105,7 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
                 dashboardUserRequestor,
                 connections
         );
-
-
     }
-
 
     @Transactional
     public void completeConnectionRequest(

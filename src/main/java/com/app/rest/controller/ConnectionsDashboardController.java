@@ -5,6 +5,7 @@ import com.app.domain.model.Connections;
 import com.app.domain.model.RequestsByOthers;
 import com.app.domain.model.RequestsByYou;
 import com.app.domain.model.ResponseDTO.ConnectionRequestDTO;
+import com.app.domain.model.ResponseDTO.RemoveConnectionDTO;
 import com.app.domain.model.ResponseDTO.UpdateRequestDTO;
 import com.app.service.ConnectionsService;
 
@@ -29,7 +30,7 @@ public class ConnectionsDashboardController {
     }
 
     @DeleteMapping("/delete-connections")
-    public ResponseEntity removeConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections) {
+    public ResponseEntity removeConnection(@RequestBody RemoveConnectionDTO responseRequestDTO, Connections connections) {
 
         connectionsService.removeConnection(responseRequestDTO, connections);
         return ResponseEntity.ok("Request deleted successfully!");
