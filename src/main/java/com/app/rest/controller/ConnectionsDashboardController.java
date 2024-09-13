@@ -29,9 +29,9 @@ public class ConnectionsDashboardController {
     }
 
     @PutMapping("/update-status")
-    public ResponseEntity approveConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers
+    public ResponseEntity approveConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers, RequestsByYou requestsByYou
                                                               ) {
-        RequestsByOthers updatedConnection = connectionsService.approveConnectionRequest(responseRequestDTO, connections, requestsByOthers);
+        RequestsByOthers updatedConnection = connectionsService.approveConnectionRequest(responseRequestDTO, connections, requestsByOthers, requestsByYou);
         return ResponseEntity.ok("Request approved successfully!");
     }
 

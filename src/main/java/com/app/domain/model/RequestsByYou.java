@@ -24,19 +24,18 @@ public class RequestsByYou {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_requests; //GERADO E PRA INDENTIFICAR DENTRO DA TABLE
+    private Integer id_requests;
 
-    private Integer id_user_to_add; //ID QUE VC QUER ADICIONAR
+    private Integer id_user_to_add;
 
-    private Integer id_dashboard_user_to_add; // ID DE DASHBOARD QUE VC QUER ADICIONAR
+    private Integer id_dashboard_user_to_add;
 
-    private String username; //USERNAME DO USUARIO QUE QUER ADICIONAR
+    private String username;
 
-    private Date connection_date; // DATA QUE VC MANDOU SOLICITACAO
+    private Date connection_date;
 
     @ToString.Include(name = "statusConnections")
-    private StatusConnections statusConnections; // STATUS INICIALMENTE EM ESPERA > REQUESTS BY OTHERS DO USUARIO QUE QUER ADICIONAR
-    // | APROVAR OU NEGAR? = Se APROVAR vai pra CONNECTIONS
+    private StatusConnections statusConnections;
 
 
 }

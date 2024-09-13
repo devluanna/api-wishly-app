@@ -35,9 +35,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     RequestsByYouRepository requestsByYouRepository;
 
 
-    //DELETAR DA TABELA DE PENDENCIAS DE QUEM APROVOU
-    //ADICIONAR NA TABELA DE CONNECTIONS DE QUEM SOLICITOU
-    //DELETAR DA TABELA DE PENDENCIAS DE QUEM ADICIONOU
+    //DELETAR DA TABELA DE PENDENCIAS DE QUEM APROVOU - ok
+    //ADICIONAR NA TABELA DE CONNECTIONS DE QUEM SOLICITOU - ok
+    //DELETAR DA TABELA DE PENDENCIAS DE QUEM ADICIONOU - ok
     private static Users userValidation(ConnectionRequestDTO requestDTO) {
         Users authenticatedUser = AuthenticationUtils.validateUser(() -> requestDTO.id_user_requester());
 
@@ -49,6 +49,22 @@ public class ConnectionsServiceImpl implements ConnectionsService {
             throw new BusinessRuleException("This function is not allowed.", HttpStatus.BAD_REQUEST);
         }
         return authenticatedUser;
+    }
+
+
+    private void isMemberAlreadyInSquad(Users authenticatedUser, ConnectionRequestDTO requestDTO) {
+
+        ConnectionsDashboard existingDashboard = authenticatedUser.getConnectionsDashboard();
+
+        List<Connections> existingConnections = existingDashboard.getConnections();
+
+        if(existingConnections != null) {
+            for (Connections connections : existingConnections) {
+                if (requestDTO.id_user_to_add().equals(connections.getId_user_connection())) {
+                    throw new BusinessRuleException("User has already been added.", HttpStatus.BAD_REQUEST);
+                }
+            }
+        }
     }
 
 
@@ -113,24 +129,9 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
 
-    private void isMemberAlreadyInSquad(Users authenticatedUser, ConnectionRequestDTO requestDTO) {
-
-        ConnectionsDashboard existingDashboard = authenticatedUser.getConnectionsDashboard();
-
-        List<Connections> existingConnections = existingDashboard.getConnections();
-
-        if(existingConnections != null) {
-            for (Connections connections : existingConnections) {
-                if (requestDTO.id_user_to_add().equals(connections.getId_user_connection())) {
-                    throw new BusinessRuleException("User has already been added.", HttpStatus.BAD_REQUEST);
-                }
-            }
-        }
-    }
-
 
     @Transactional
-    public RequestsByOthers approveConnectionRequest(UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers) {
+    public RequestsByOthers approveConnectionRequest(UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers, RequestsByYou requestsByYou) {
 
         Users authenticatedUser = AuthenticationUtils.validateUser(() -> responseRequestDTO.approval_user_id());
 
@@ -145,39 +146,85 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 
         requestExist.setStatusConnections(StatusConnections.APPROVEDBYME);
 
-        completionTheRequest(requestExist, authenticatedUser, connections, dashboardUser);
+        Integer requesterId = responseRequestDTO.id_user_requester();
+        String name = getUserFullName(requestExist.getId_user_requestor());
+
+        completeConnectionRequest(
+                requestExist.getId_user_requestor(),
+                name,
+                requestExist.getUsername(),
+                dashboardUser,
+                connections
+        );
+
+        approveConnectionForRequester(responseRequestDTO, connections, requesterId);
 
         requestsByOthersRepository.deleteByIdRequestsPending(requestExist.getId_requests_pending());
-
         dashboardRepository.save(dashboardUser);
 
         return requestExist;
-
     }
+
     @Transactional
-    public void completionTheRequest(RequestsByOthers requestExist, Users authenticatedUser, Connections connections, ConnectionsDashboard dashboardUser) {
-        Integer id_user = requestExist.getId_user_requestor();
-        Users userExist = userRepository.findById(id_user)
+    public void approveConnectionForRequester(UpdateRequestDTO responseRequestDTO, Connections connections, Integer requesterId) {
+        Users userExists = userRepository.findById(requesterId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        String name = userExist.getFirst_name() + " " + userExist.getLast_name();
+        ConnectionsDashboard dashboardUserRequestor = userExists.getConnectionsDashboard();
+
+        List<RequestsByYou> existingRequestsByRequestor = userExists.getConnectionsDashboard().getRequestsByYou();
+
+        RequestsByYou requestExist = existingRequestsByRequestor.stream()
+                .filter(req -> req.getId_user_to_add().equals(responseRequestDTO.approval_user_id()))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+
+        requestsByYouRepository.deleteByIdRequestsPending(requestExist.getId_requests());
+
+        String name = getUserFullName(requestExist.getId_user_to_add());
+
+        completeConnectionRequest(
+                requestExist.getId_user_to_add(),
+                name,
+                requestExist.getUsername(),
+                dashboardUserRequestor,
+                connections
+        );
+
+
+    }
+    public String getUserFullName(Integer userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return user.getFirst_name() + " " + user.getLast_name();
+    }
+
+
+    @Transactional
+    public void completeConnectionRequest(
+            Integer userId,
+            String name,
+            String userUsername,
+            ConnectionsDashboard dashboardUser,
+            Connections connections) {
 
         Connections completionRequest = new Connections();
-        completionRequest.setId_user_connection(requestExist.getId_user_requestor());
+        completionRequest.setId_user_connection(userId);
         completionRequest.setName(name);
-        completionRequest.setUsername(requestExist.getUsername());
+        completionRequest.setUsername(userUsername);
         completionRequest.setStatusConnections(StatusConnections.APPROVEDBYME);
         completionRequest.setConnection_date(new Date());
         completionRequest.setProfileIsOpenForConnections(true);
-        completionRequest.setDashboard(authenticatedUser.getConnectionsDashboard());
+        completionRequest.setDashboard(dashboardUser);
 
         dashboardUser.addNewConnection(completionRequest);
         connections.setDashboard(dashboardUser);
 
         connectionsRepository.save(completionRequest);
         dashboardRepository.save(dashboardUser);
-
     }
+
 
 
     public void countConnectionsTotal(Integer id_dashboard) {

@@ -23,18 +23,18 @@ public class RequestsByOthers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_requests_pending; //GERADO E PRA INDENTIFICAR DENTRO DA TABLE
+    private Integer id_requests_pending;
 
-    private Integer id_user_requestor; //ID QUE TE ADICIONOU
+    private Integer id_user_requestor;
 
-    private Integer id_dashboard_user_requestor; // ID DE DASHBOARD QUE TE ADICIONOU
+    private Integer id_dashboard_user_requestor;
 
-    private String username; // USERNAME DE QUEM TE ADICIONOU
+    private String username;
 
-    private Date connection_date; //DATA QUE FOI FEITA A SOLICITACAO
+    private Date connection_date;
 
     @ToString.Include(name = "statusConnections")
-    private StatusConnections statusConnections; // STATUS INICIALMENTE EM ESPERA | APROVAR OU NEGAR? = Se APROVAR vai pra CONNECTIONS
+    private StatusConnections statusConnections;
 
 
 }
