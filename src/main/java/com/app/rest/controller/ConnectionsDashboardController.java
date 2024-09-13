@@ -28,13 +28,11 @@ public class ConnectionsDashboardController {
         return ResponseEntity.ok(userAdded);
     }
 
-    @PutMapping("/update-status")
-    public ResponseEntity approveConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections, RequestsByOthers requestsByOthers, RequestsByYou requestsByYou
-                                                              ) {
-        RequestsByOthers updatedConnection = connectionsService.approveConnectionRequest(responseRequestDTO, connections, requestsByOthers, requestsByYou);
-        return ResponseEntity.ok("Request approved successfully!");
+    @DeleteMapping("/delete-connections")
+    public ResponseEntity removeConnection(@RequestBody UpdateRequestDTO responseRequestDTO, Connections connections) {
+
+        connectionsService.removeConnection(responseRequestDTO, connections);
+        return ResponseEntity.ok("Request deleted successfully!");
     }
-
-
 
 }

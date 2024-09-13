@@ -21,7 +21,7 @@ public class ConnectionsDashboard {
     private Integer id_responsible_user;
     private String responsible_username;
     private String responsible_user_email;
-    private Integer count_friends;
+    private Integer count_friends = 0;
 
     @JsonIgnore
     @ToString.Exclude
@@ -58,6 +58,7 @@ public class ConnectionsDashboard {
             this.connections = new ArrayList<>();
         }
         this.connections.add(newConnection);
+        this.count_friends = this.connections.size();
     }
 
     public List<Connections> getConnections() {
@@ -66,7 +67,10 @@ public class ConnectionsDashboard {
 
     public void setConnections(List<Connections> connections) {
         this.connections = connections;
+        this.count_friends = connections.size();
     }
+
+
 
 
 
