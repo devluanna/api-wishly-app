@@ -12,25 +12,28 @@ import java.util.Date;
 @Entity
 @JsonPropertyOrder({ "id", "id_responsible_request", "id_dashboard_request", "username", "id_dashboard_user", "statusConnections", "profileIsOpenForConnections", "connection_date",})
 public class Connections {
-    // COLOCAR SE O USUARIO FOI ADICIONADO OU SE FOI ACEITO
+
+
+    //Colocar uma rastreio de quem adicionou e quem aceitou?
+    // StatusConnection eh suficiente?
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_connection;
 
 
-    private Integer id_user_connection; // ID CONEXAO
+    private Integer id_user_connection;
     private String name;
-    private String username;// USERNAME DA CONEXAO
-    private StatusConnections statusConnections; // aprovado por mim ou por outros
-    private Boolean profileIsOpenForConnections; // FALSO PARA VER INFORMACOES DO USUARIO Y, ATE QUE O Y APROVE
+    private String username;
+    private StatusConnections statusConnections;
+    private Boolean profileIsOpenForConnections;
 
     private Date connection_date;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard")
-    private ConnectionsDashboard dashboard; //ID DO SEU DASHBOARD
+    private ConnectionsDashboard dashboard;
 
 
 

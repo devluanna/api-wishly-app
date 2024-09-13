@@ -11,8 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -153,6 +151,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                 requestExist.getId_user_requestor(),
                 name,
                 requestExist.getUsername(),
+                StatusConnections.APPROVEDBYME,
                 dashboardUser,
                 connections
         );
@@ -188,6 +187,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
                 requestExist.getId_user_to_add(),
                 name,
                 requestExist.getUsername(),
+                StatusConnections.APPROVEDBYREQUESTED,
                 dashboardUserRequestor,
                 connections
         );
@@ -206,6 +206,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
             Integer userId,
             String name,
             String userUsername,
+            StatusConnections statusConnections,
             ConnectionsDashboard dashboardUser,
             Connections connections) {
 
@@ -213,7 +214,7 @@ public class ConnectionsServiceImpl implements ConnectionsService {
         completionRequest.setId_user_connection(userId);
         completionRequest.setName(name);
         completionRequest.setUsername(userUsername);
-        completionRequest.setStatusConnections(StatusConnections.APPROVEDBYME);
+        completionRequest.setStatusConnections(statusConnections);
         completionRequest.setConnection_date(new Date());
         completionRequest.setProfileIsOpenForConnections(true);
         completionRequest.setDashboard(dashboardUser);

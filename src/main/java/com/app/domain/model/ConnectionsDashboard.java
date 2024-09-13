@@ -1,11 +1,9 @@
 package com.app.domain.model;
 
-
-import com.app.exception.BusinessRuleException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.http.HttpStatus;
+
 
 import java.util.ArrayList;
 import java.util.List;

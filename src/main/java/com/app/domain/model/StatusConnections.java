@@ -3,7 +3,7 @@ package com.app.domain.model;
 public enum StatusConnections {
 
         APPROVEDBYME("APPROVED BY ME"),
-        APPROVEDBYOTHERS("APPROVED BY OTHERS"),
+        APPROVEDBYREQUESTED("APPROVED BY REQUESTED"),
         ONSTAND("ON STAND"),
         DENIED("DENIED");
 
