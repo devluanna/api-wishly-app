@@ -19,6 +19,7 @@ public class WishlistSubscribers {
     private String username;
     private Date date_you_joined;
     private StatusSubscribers statusSubscribers;
+    private boolean isUserWithConnection; //SE O USUARIO TEM CONEXAO COM O OWNER
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)

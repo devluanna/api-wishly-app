@@ -13,6 +13,7 @@ public class Events {
     private Integer id_event;
     private String event_name;
     private String event_description;
+    private String category;
     private Integer id_owner;
     private String username_owner;
     private Visibility visibility;

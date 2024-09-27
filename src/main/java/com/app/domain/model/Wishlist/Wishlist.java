@@ -1,5 +1,6 @@
 package com.app.domain.model.Wishlist;
 
+import com.app.domain.model.DashboardWishlist.DashboardRequestsSubscribers;
 import com.app.domain.model.Product.ProductList;
 import com.app.domain.model.Product.RecommendedProducts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,11 +29,12 @@ public class Wishlist {
     private Visibility visibility;
     private String url_public_wishlist; //url publica https://wishly.com/wishlist/121323 ou https://wishly.com/wishlist/lua/124e3
     private String url_share; //url gerada enviar para alguem entrar na wishlist (dentro dela endpoint para entrar dentro/no front button pra pessoa convidada aceitar)
-    private String categoria;
-    private String subcategoria;
+    private String category;
+    private String sub_category;
     private Integer count_likes = 0;
     private Integer count_shares = 0; //quantidade de pessoas que estao dentro da wishlist/que foi compartilhado/que se inscreveram
     private Integer count_copies = 0;
+    private Integer count_recommended_products_pending = 0; //quantidade de produtos por recomendacao pendentes
     private String tags;
     private StatusWishlistEvent status;
     private Date creation_date;
@@ -61,11 +63,10 @@ public class Wishlist {
     @OneToMany(mappedBy = "recommendedProducts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RecommendedProducts> recommendedProducts = new ArrayList<>();
 
-    private String ArrayRequestsQueEuConvide;
-    //links gerados de compartilhamento e enviado ficarao aqui e com status pendente aprovacao
-    // pra pessoas que ja tem conta criada no sistema/amigo
-    //verificar como resolver a questao de quando elas nao tiverem e precisarao criar
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToOne(mappedBy = "dashboardRequestsSubscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private DashboardRequestsSubscribers dashboardRequestsSubscribers;
 
-    private String ArrayConvitesPraSeInscreverem; //pessoas tentando entrar dentro de uma wishlist privada.
 
 }

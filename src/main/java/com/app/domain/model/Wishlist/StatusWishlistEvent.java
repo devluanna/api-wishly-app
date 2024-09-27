@@ -6,7 +6,6 @@ public enum StatusWishlistEvent {
     INPROGRESS("IN PROGRESS"), //em andamento
     ARCHIVED("ARCHIVED"), //arquivada -> pode recuperar
     DELETED("DELETED"), //deletada - colocar quantos dias falta para recuperar e mandar notificacao para o usuario quando tiver faltando 3 dias
-
     FINALIZED("FINALIZED"); //finalizada
 
 

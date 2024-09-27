@@ -22,6 +22,8 @@ public class ConnectionsDashboard {
     private String responsible_username;
     private String responsible_user_email;
     private Integer count_friends = 0;
+    private Integer count_requests_by_you = 0; //solicitacoes que voce enviou
+    private Integer count_requests_by_others = 0; //solicitacoes para voce aprovar
 
     @JsonIgnore
     @ToString.Exclude
