@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +35,13 @@ public class Users implements UserDetails {
     private Boolean tokenValidate;
     private Date tokenExpiration;
 
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard")
     private ConnectionsDashboard connectionsDashboard;
+
+    @JoinColumn(name = "id_notification")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<NotificationsUser> notificationsUsers = new ArrayList<>();
 
     public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status, ConnectionsDashboard connectionsDashboard) {
         this.first_name = first_name;

@@ -5,7 +5,7 @@ public enum StatusConnections {
         APPROVEDBYME("APPROVED BY ME"),
         APPROVEDBYREQUESTED("APPROVED BY REQUESTED"),
         ONSTAND("ON STAND"),
-        DENIED("DENIED");
+        DENIED("DENIED"); //criar uma tabela com solicitacoes que eu neguei? IMPORTANTE! ter historico
 
 
         private String status_connection;

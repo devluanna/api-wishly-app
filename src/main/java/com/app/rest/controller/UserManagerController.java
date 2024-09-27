@@ -1,6 +1,6 @@
 package com.app.rest.controller;
 
-
+import com.app.domain.model.ResponseDTO.ListUsersDTO;
 import com.app.domain.model.ResponseDTO.*;
 import com.app.domain.model.Users;
 import com.app.service.PasswordService;
@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -31,6 +33,18 @@ public class UserManagerController {
         }
 
         return ResponseEntity.ok(personUser);
+    }
+
+    @GetMapping("/list-users")
+    public ResponseEntity<List<ListUsersDTO>> getAllUsers() {
+
+        List<ListUsersDTO> user = userService.getAllUsers();
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
     }
 
 

@@ -166,37 +166,4 @@ public class ConnectionsServiceImpl implements ConnectionsService {
     }
 
 
-/*    @Transactional
-    private void removeMyConnection(Integer requesterId, ConnectionsDashboard dashboardUser) {
-        List<Connections> existingConnectionsRequests = dashboardUser.getConnections();
-
-        Connections requestExist = existingConnectionsRequests.stream()
-                .filter(req -> req.getId_user_connection().equals(requesterId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Request not found in RequestsByOthers"));
-
-
-        existingConnectionsRequests.remove(requestExist);
-
-
-        dashboardRepository.save(dashboardUser);
-        connectionsRepository.delete(requestExist);
-    }
-
-    @Transactional
-    private void removeConnectionsOther(Integer requestedId, ConnectionsDashboard dashboardUser) {
-        List<Connections> existingConnectionsRequests = dashboardUser.getConnections();
-
-        Connections requestExist = existingConnectionsRequests.stream()
-                .filter(req -> req.getId_user_connection().equals(requestedId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Request not found in RequestsByOthers"));
-
-
-        existingConnectionsRequests.remove(requestExist);
-
-
-        dashboardRepository.save(dashboardUser);
-        connectionsRepository.delete(requestExist);
-    }*/
 }

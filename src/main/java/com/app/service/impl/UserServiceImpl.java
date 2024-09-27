@@ -1,5 +1,6 @@
 package com.app.service.impl;
 import com.app.domain.model.ConnectionsDashboard;
+import com.app.domain.model.ResponseDTO.ListUsersDTO;
 import com.app.domain.model.ResponseDTO.UpdateUserDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
 import com.app.domain.model.Status;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -35,8 +37,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id_user).orElseThrow(NoSuchElementException::new);
     }
     @Override
+    @Transactional
     public UserDTO getUserById(Integer id_user) {
         return userRepository.findUserById(id_user);
+    }
+
+    @Override
+    @Transactional
+    public List<ListUsersDTO> getAllUsers() {
+        return userRepository.findAllUsers();
     }
 
 
