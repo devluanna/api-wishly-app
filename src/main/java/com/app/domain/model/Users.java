@@ -1,5 +1,7 @@
 package com.app.domain.model;
 
+import com.app.domain.model.DashboardWishlist.DashboardRequestsSubscribers;
+import com.app.domain.model.Utilities.DashboardRequestsAndPending;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +41,10 @@ public class Users implements UserDetails {
     @JoinColumn(name = "id_dashboard")
     private ConnectionsDashboard connectionsDashboard;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_dashboard_requests_and_pending")
+    private DashboardRequestsAndPending dashboardRequestsAndPending;
+
     @JoinColumn(name = "id_notification")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NotificationsUser> notificationsUsers = new ArrayList<>();
@@ -57,6 +63,13 @@ public class Users implements UserDetails {
         this.connectionsDashboard = connectionsDashboard;
     }
 
+    public void addNewNotification(NotificationsUser newNotification) {
+        if (this.notificationsUsers == null) {
+            this.notificationsUsers = new ArrayList<>();
+        }
+
+        this.notificationsUsers.add(newNotification);
+    }
 
     public Users(String username, String email) {
         this.username = username;

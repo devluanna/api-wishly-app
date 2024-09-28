@@ -22,6 +22,5 @@ public class AuthenticationUtils {
         }
 
         return authenticatedUser;
-
 }
 }

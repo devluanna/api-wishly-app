@@ -3,18 +3,15 @@ package com.app.service.impl;
 import com.app.domain.model.*;
 import com.app.domain.model.ResponseDTO.UpdateRequestDTO;
 import com.app.domain.repository.*;
-import com.app.exception.BusinessRuleException;
 import com.app.service.ApproveDenyConnectionService;
 import com.app.utils.AuthenticationUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionService {
@@ -28,6 +25,9 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
     ConnectionsDashboardRepository dashboardRepository;
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    NotificationUserRepository notificationsUserRepository;
     @Autowired
     RequestsByOthersRepository requestsByOthersRepository;
     @Autowired
@@ -57,6 +57,7 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
         requestExist.setStatusConnections(StatusConnections.APPROVEDBYME);
 
         Integer requesterId = responseRequestDTO.id_user_requester();
+
         String name = getUserFullName(requestExist.getId_user_requestor());
 
         completeConnectionRequest(
@@ -68,15 +69,43 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
                 connections
         );
 
-
         approveConnectionForRequester(responseRequestDTO, connections, requesterId);
 
         requestsByOthersRepository.deleteByIdRequestsPending(requestExist.getId_requests_pending());
         dashboardRepository.save(dashboardUser);
 
+        notificationTheUser(requesterId, authenticatedUser);
+
         return requestExist;
     }
 
+
+    public void notificationTheUser(Integer requesterId, Users authenticatedUser) {
+
+        Users user = userRepository.findById(requesterId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        System.out.println("NOTIFICACAO EH DO USUARIO " + user.getId_user() + user.getUsername());
+
+        String nameResponsibleApprovel = authenticatedUser.getFirst_name() + " " + authenticatedUser.getLast_name();
+
+        NotificationsUser newNotification = new NotificationsUser();
+
+        newNotification.setId_user(requesterId);
+        newNotification.setUsername(user.getUsername());
+        newNotification.setId_dashboard_user(user.getConnectionsDashboard().getId_dashboard());
+        newNotification.setNotification_name("Connection Request Approved!");
+        newNotification.setNotification_description("Your connection request to the user" + " " + nameResponsibleApprovel + " " + "was successfully approved. You are friends!");
+        //newNotification.setInformation_data(nameResponsibleApprovel);
+        newNotification.setDate_of_notification(new Date());
+        newNotification.setNotification_reminder(false);
+        newNotification.setNotificationWasViewed(false);
+
+        user.addNewNotification(newNotification);
+        notificationsUserRepository.save(newNotification);
+        userRepository.save(user);
+
+    }
 
     @Transactional
     public void approveConnectionForRequester(UpdateRequestDTO responseRequestDTO, Connections connections, Integer requesterId) {
@@ -101,7 +130,7 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
                 requestExist.getId_user_to_add(),
                 name,
                 requestExist.getUsername(),
-                StatusConnections.APPROVEDBYREQUESTED,
+                StatusConnections.APPROVEDBYOTHERS,
                 dashboardUserRequestor,
                 connections
         );

@@ -17,9 +17,17 @@ public class NotificationsUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_notification;
 
+    private Integer id_user;
+
+    private Integer id_dashboard_user;
+
+    private String username;
+
     private String notification_name;
 
-    private String notification_description;
+    //private String information_data; //DESCOMENTAR PARA UTILIZAR NO FRONT
+
+    private String notification_description; //APAGAR POIS O FRONT SERA RESPONSAVEL PELA MENSAGEM!
 
     private boolean notificationWasViewed = false;
 

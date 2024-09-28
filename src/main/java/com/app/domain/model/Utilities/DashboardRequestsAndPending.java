@@ -20,15 +20,22 @@ public class DashboardRequestsAndPending {
     private String responsible_username;
     private Integer count_requests = 0; //solicitacoes que voce enviou
     private Integer count_pending = 0; //solicitacoes para voce aprovar
+    private Integer count_subscriptions = 0; //inscricoes nas wishlists
+
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "requests", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dashboard_requests_pending", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Requests> requests = new ArrayList<>();
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "pending", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dashboard_requests_pending", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Pending> pending = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "dashboard_requests_pending", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<MySubscriptions> mySubscriptions = new ArrayList<>();
 
 }

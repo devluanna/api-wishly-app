@@ -22,7 +22,7 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_wishlist;
     private String wishlist_name;
-    private String uriImg;
+    private String url_img;
     private String description;
     private Integer id_owner;
     private String username_owner;
@@ -40,32 +40,35 @@ public class Wishlist {
     private Date creation_date;
     private Date start_date; //Possui evento? se sim, a data de inicio e fim vai ser substituida por a do evento
     private Date end_date;
+    private boolean haveLinkedEvent; //tem evento vinculado? se sim mostrar o evento/se nao.
     private boolean enableProductsByRecommendation; // se for true, habilita o lambda/python
     private boolean enablesProductReservations; // se for true, habilita um botao de RESERVAR no front e aciona o lambda/step functions
+    private boolean isACopiedWishlist; //se for true, linkar com a wishlist que foi copiada e tambem se alguem copiar essa, sempre mostrar a wishlsit mae
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Events event;
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "wishlistSubscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<WishlistSubscribers> wishlistSubscribers = new ArrayList<>(); //inscritos/convidados/que estao dentro da wishlist
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "productsList", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ProductList> productsList = new ArrayList<>(); //itens dentro da wishlist
 
+    // *****  CRIAR UMA TABELA ONDE O USUARIO PODE VER TODOS OS PRODUTOS QUE ELE RECOMENDOU NAS WISHLISTS? E O STATUS Q ESTA!  ***** //
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "recommendedProducts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RecommendedProducts> recommendedProducts = new ArrayList<>();
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToOne(mappedBy = "dashboardRequestsSubscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private DashboardRequestsSubscribers dashboardRequestsSubscribers;
 
 

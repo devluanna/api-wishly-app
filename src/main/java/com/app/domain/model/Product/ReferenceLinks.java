@@ -18,8 +18,8 @@ public class ReferenceLinks {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_wishlist")
+    @JoinColumn(name = "id_product")
     @ToString.Exclude
-    private Wishlist wishlist;
+    private ProductList productList;
 
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 public class ProductList {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_product;
@@ -20,10 +21,12 @@ public class ProductList {
     private String categoria;
     private String uriImg;
     private Integer price;
+
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "referenceLinks", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "productList", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReferenceLinks> referenceLinks = new ArrayList<>();
+
     private boolean isTheProductReserved = false;
     private Integer id_user; //id do usuario que reservou se isTheProductReserved for true
     private String username; //username do usuario que reservou se isTheProductReserved for true

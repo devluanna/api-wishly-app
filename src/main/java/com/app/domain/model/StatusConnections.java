@@ -3,7 +3,7 @@ package com.app.domain.model;
 public enum StatusConnections {
 
         APPROVEDBYME("APPROVED BY ME"),
-        APPROVEDBYREQUESTED("APPROVED BY REQUESTED"),
+        APPROVEDBYOTHERS("APPROVED BY OTHERS"),
         ONSTAND("ON STAND"),
         DENIED("DENIED"); //criar uma tabela com solicitacoes que eu neguei? IMPORTANTE! ter historico
 

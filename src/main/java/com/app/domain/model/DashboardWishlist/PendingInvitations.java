@@ -20,20 +20,22 @@ public class PendingInvitations {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_pending_invitation;
 
-    private Integer id_user;
-    private String username;
+    private Integer id_user_guest;
+    private String username_guest;
     private Date invitation_date;
     private String url_share;
     private boolean isUserWithConnection; //SE O USUARIO TEM CONEXAO COM O OWNER
     private StatusSubscribers statusSubscribers; //inicia com WAITINGFORAPPROVAL
+
     private Integer id_wishlist;
     private String name_wishlist;
+    private Integer id_owner;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard_requests")
     @ToString.Exclude
-    private DashboardRequestsSubscribers id_dashboard_requests;
+    private DashboardRequestsSubscribers dashboard_pending_subscribers;
 
 
 }

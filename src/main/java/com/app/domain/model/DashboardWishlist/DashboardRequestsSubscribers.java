@@ -23,6 +23,7 @@ public class DashboardRequestsSubscribers {
     @JoinColumn(name = "id_wishlist")
     @ToString.Exclude
     private Wishlist wishlist;
+
     private String name_wishlist;
 
     private Integer count_subscriber_requests = 0;
@@ -30,13 +31,13 @@ public class DashboardRequestsSubscribers {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "subscriberRequests", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dashboard_requests_subscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<SubscriberRequests> subscriberRequests = new ArrayList<>(); //PESSOAS INSCRITAS NA WISHLIST PRIVADA
 
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "pendingInvitations", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "dashboard_pending_subscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PendingInvitations> pendingInvitations = new ArrayList<>(); //CONVITES QUE O OWNER GEROU E ENVIOU
 
 }

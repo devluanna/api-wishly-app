@@ -22,7 +22,7 @@ public class Events {
     private Date start_date;
     private Date end_date;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_wishlist")
     private Wishlist wishlist;
 
