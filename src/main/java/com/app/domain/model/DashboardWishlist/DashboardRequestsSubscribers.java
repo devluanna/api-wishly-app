@@ -19,12 +19,15 @@ public class DashboardRequestsSubscribers {
     private Integer id_dashboard_requests;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_wishlist")
     @ToString.Exclude
+    @OneToOne(mappedBy = "dashboardRequestsSubscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Wishlist wishlist;
 
+    private Integer id_responsible_user;
+    private Integer id_wishlist;
+    private String username_responsible;
     private String name_wishlist;
+    private Integer identity_wishlist;
 
     private Integer count_subscriber_requests = 0;
     private Integer count_pending_invitations = 0;
@@ -39,6 +42,23 @@ public class DashboardRequestsSubscribers {
     @ToString.Exclude
     @OneToMany(mappedBy = "dashboard_pending_subscribers", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PendingInvitations> pendingInvitations = new ArrayList<>(); //CONVITES QUE O OWNER GEROU E ENVIOU
+
+
+    public void addSubscriberRequests(SubscriberRequests newSubscriberRequests) {
+        if (this.subscriberRequests == null) {
+            this.subscriberRequests = new ArrayList<>();
+        }
+
+        this.subscriberRequests.add(newSubscriberRequests);
+    }
+    public void addPendingInvitations(PendingInvitations newInvitation) {
+        if (this.pendingInvitations == null) {
+            this.pendingInvitations = new ArrayList<>();
+        }
+
+        this.pendingInvitations.add(newInvitation);
+    }
+
 
 }
 

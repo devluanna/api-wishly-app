@@ -9,11 +9,11 @@ public enum StatusWishlistEvent {
     FINALIZED("FINALIZED"); //finalizada
 
 
-    private String status_wishlist_event;
+    private final String status_wishlist_event;
 
     private StatusWishlistEvent(String status_wishlist_event) {this.status_wishlist_event = status_wishlist_event;}
 
-    public String getStatus_wishlist() {
+    public String getStatusWishlistEvent() {
         return status_wishlist_event;
     }
 

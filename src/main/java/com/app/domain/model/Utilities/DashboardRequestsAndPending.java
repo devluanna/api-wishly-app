@@ -1,5 +1,6 @@
 package com.app.domain.model.Utilities;
 
+import com.app.domain.model.DashboardWishlist.SubscriberRequests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -37,5 +38,29 @@ public class DashboardRequestsAndPending {
     @ToString.Exclude
     @OneToMany(mappedBy = "dashboard_requests_pending", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MySubscriptions> mySubscriptions = new ArrayList<>();
+
+    public void addSubscriber(MySubscriptions newSubscriber) {
+        if (this.mySubscriptions == null) {
+            this.mySubscriptions = new ArrayList<>();
+        }
+
+        this.mySubscriptions.add(newSubscriber);
+    }
+
+    public void addRequests(Requests newRequests) {
+        if (this.requests == null) {
+            this.requests = new ArrayList<>();
+        }
+
+        this.requests.add(newRequests);
+    }
+
+    public void addInvite(Pending newGuest) {
+        if (this.pending == null) {
+            this.pending = new ArrayList<>();
+        }
+
+        this.pending.add(newGuest);
+    }
 
 }

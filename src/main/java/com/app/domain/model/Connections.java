@@ -33,13 +33,10 @@ public class Connections {
     private Date connection_date;
 
     @JsonIgnore
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard")
-    @ToString.Exclude
     private ConnectionsDashboard dashboard;
-
-
-
 
 
 }

@@ -12,7 +12,8 @@ public class ReferenceLinks {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id_link;
+    private Integer id_reference_link;
+
     private String name_link;
     private String reference_link;
 
@@ -21,5 +22,6 @@ public class ReferenceLinks {
     @JoinColumn(name = "id_product")
     @ToString.Exclude
     private ProductList productList;
+
 
 }

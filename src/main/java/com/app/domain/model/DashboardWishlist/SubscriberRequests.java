@@ -17,7 +17,7 @@ public class SubscriberRequests {
     //INSCRITOS TENTANDO ENTRAR NA WISHLIST
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_subscriber_request;
 
     private Integer id_user;

@@ -1,10 +1,10 @@
 package com.app.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.app.domain.model.Utilities.DashboardRequestsAndPending;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -17,23 +17,26 @@ public class NotificationsUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id_notification;
 
-    private Integer id_user;
-
     private Integer id_dashboard_user;
 
     private String username;
 
     private String notification_name;
 
-    //private String information_data; //DESCOMENTAR PARA UTILIZAR NO FRONT
-
-    private String notification_description; //APAGAR POIS O FRONT SERA RESPONSAVEL PELA MENSAGEM!
+    private String notification_description;
 
     private boolean notificationWasViewed = false;
 
-    private Date date_of_notification; //data da notificacao
+    private Date date_of_notification;
 
-    private boolean notification_reminder; //essa notificacao e um lembrete?
+    private boolean notification_reminder;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_user")
+    @ToString.Exclude
+    private Users users;
+
 
 
 }

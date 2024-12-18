@@ -1,17 +1,34 @@
 package com.app.service.impl;
 
 import com.app.domain.model.*;
+import com.app.domain.model.DashboardWishlist.PendingInvitations;
+import com.app.domain.model.DashboardWishlist.SubscriberRequests;
 import com.app.domain.model.ResponseDTO.UpdateRequestDTO;
-import com.app.domain.repository.*;
+import com.app.domain.model.Utilities.Pending;
+import com.app.domain.model.Utilities.Requests;
+import com.app.domain.model.Wishlist.Wishlist;
+import com.app.domain.model.Wishlist.WishlistSubscribers;
+import com.app.domain.repository.ConnectionsUser.RequestsByOthersRepository;
+import com.app.domain.repository.ConnectionsUser.RequestsByYouRepository;
+import com.app.domain.repository.User.ConnectionsDashboardRepository;
+import com.app.domain.repository.ConnectionsUser.ConnectionsRepository;
+import com.app.domain.repository.User.NotificationUserRepository;
+import com.app.domain.repository.User.UserRepository;
+import com.app.domain.repository.Wishlist.*;
 import com.app.service.ApproveDenyConnectionService;
 import com.app.utils.AuthenticationUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @Service
 public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionService {
@@ -25,13 +42,33 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
     ConnectionsDashboardRepository dashboardRepository;
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     NotificationUserRepository notificationsUserRepository;
     @Autowired
     RequestsByOthersRepository requestsByOthersRepository;
     @Autowired
     RequestsByYouRepository requestsByYouRepository;
+
+    @Autowired
+    NotificationServiceImpl notificationServiceImpl;
+
+    @Autowired
+    PendingInvitationsRepository pendingInvitationsRepository;
+
+    @Autowired
+    PendingRepository pendingRepository;
+
+    @Autowired
+    MySubscriberRequestsRepository mySubscriberRequestsRepository;
+
+    @Autowired
+    SubscribersRequestsRepository subscribersRequestsRepository;
+
+    @Autowired
+    WishlistSubscribersRepository wishlistSubscribersRepository;
+
+    @Autowired
+    WishlistRepository wishlistRepository;
 
     public String getUserFullName(Integer userId) {
         Users user = userRepository.findById(userId)
@@ -74,37 +111,139 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
         requestsByOthersRepository.deleteByIdRequestsPending(requestExist.getId_requests_pending());
         dashboardRepository.save(dashboardUser);
 
+        changeStatusConnection(requesterId, authenticatedUser);
+
         notificationTheUser(requesterId, authenticatedUser);
 
         return requestExist;
     }
 
 
-    public void notificationTheUser(Integer requesterId, Users authenticatedUser) {
+    private void changeStatusConnection(Integer requesterId, Users authenticatedUser) {
+        changeStatusConnectionsSubscribers(requesterId, authenticatedUser);
+        changeStatusConnectionsPending(requesterId, authenticatedUser);
+        changeStatusConnectionsPendingInvitation(requesterId, authenticatedUser);
+        changeStatusConnectionsRequestsWishlist(requesterId, authenticatedUser);
+        changeStatusConnectionsMyRequestsSubscriptions(requesterId, authenticatedUser);
 
+    }
+
+    private void changeStatusConnectionsSubscribers(Integer requesterId, Users authenticatedUser) {
+        List<WishlistSubscribers> existSubscribers = wishlistSubscribersRepository.findAll();
+
+        for (WishlistSubscribers subscriber : existSubscribers) {
+
+            if (subscriber.getId_user().equals(requesterId)
+                    && subscriber.getWishlist().getId_owner().equals(authenticatedUser.getId_user())) {
+                subscriber.setUserWithConnection(true);
+            }
+
+            else if (subscriber.getId_user().equals(authenticatedUser.getId_user())
+                    && subscriber.getWishlist().getId_owner().equals(requesterId)) {
+                subscriber.setUserWithConnection(true);
+            }
+        }
+
+
+        wishlistSubscribersRepository.saveAll(existSubscribers);
+    }
+
+    private void changeStatusConnectionsPending(Integer requesterId, Users authenticatedUser) {
+        List<Pending> existPending = pendingRepository.findAll();
+
+        for (Pending pending : existPending) {
+
+            if (pending.getId_user_guest().equals(requesterId)
+                    && pending.getId_owner_user().equals(authenticatedUser.getId_user())) {
+                pending.setUserWithConnection(true);
+            }
+
+            else if (pending.getId_user_guest().equals(authenticatedUser.getId_user())
+                    && pending.getId_owner_user().equals(requesterId)) {
+                pending.setUserWithConnection(true);
+            }
+        }
+
+        pendingRepository.saveAll(existPending);
+    }
+
+    private void changeStatusConnectionsPendingInvitation(Integer requesterId, Users authenticatedUser) {
+        List<PendingInvitations> existPending = pendingInvitationsRepository.findAll();
+
+        for (PendingInvitations invitationsPending : existPending) {
+
+            if (invitationsPending.getId_user_guest().equals(requesterId)
+                    && invitationsPending.getId_owner().equals(authenticatedUser.getId_user())) {
+                invitationsPending.setUserWithConnection(true);
+            }
+
+            else if (invitationsPending.getId_user_guest().equals(authenticatedUser.getId_user())
+                    && invitationsPending.getId_owner().equals(requesterId)) {
+                invitationsPending.setUserWithConnection(true);
+            }
+        }
+
+        pendingInvitationsRepository.saveAll(existPending);
+    }
+
+    private void changeStatusConnectionsRequestsWishlist(Integer requesterId, Users authenticatedUser) {
+        List<SubscriberRequests> existRequestsWishlist = subscribersRequestsRepository.findAll();
+
+        for (SubscriberRequests requests : existRequestsWishlist) {
+
+            Integer idOwnerWishlist = requests.getId_wishlist();
+
+            Wishlist existWishlist = wishlistRepository.findById(idOwnerWishlist)
+                    .orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+
+            Integer getOwner = existWishlist.getDashboardWishlists().getId_responsible_user();
+
+            if (requests.getId_user().equals(requesterId)
+                    && getOwner.equals(authenticatedUser.getId_user())) {
+                requests.setUserWithConnection(true);
+            }
+
+            else if (requests.getId_user().equals(authenticatedUser.getId_user())
+                    && getOwner.equals(requesterId)) {
+                requests.setUserWithConnection(true);
+            }
+        }
+
+        subscribersRequestsRepository.saveAll(existRequestsWishlist);
+    }
+
+    private void changeStatusConnectionsMyRequestsSubscriptions(Integer requesterId, Users authenticatedUser) {
+        List<Requests> existMyRequests = mySubscriberRequestsRepository.findAll();
+
+        for (Requests myRequests : existMyRequests) {
+
+            if (myRequests.getId_user().equals(requesterId)
+                    && myRequests.getId_owner_user().equals(authenticatedUser.getId_user())) {
+                myRequests.setUserWithConnection(true);
+            }
+
+            else if (myRequests.getId_user().equals(authenticatedUser.getId_user())
+                    && myRequests.getId_owner_user().equals(requesterId)) {
+                myRequests.setUserWithConnection(true);
+            }
+        }
+
+        mySubscriberRequestsRepository.saveAll(existMyRequests);
+    }
+
+    public void notificationTheUser(Integer requesterId, Users authenticatedUser) {
         Users user = userRepository.findById(requesterId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        System.out.println("NOTIFICACAO EH DO USUARIO " + user.getId_user() + user.getUsername());
+        String nameResponsibleApproval = authenticatedUser.getFirst_name() + " " + authenticatedUser.getLast_name();
+        String notificationDescription = "Your connection request to the user " + nameResponsibleApproval + " was successfully approved. You are now friends!";
 
-        String nameResponsibleApprovel = authenticatedUser.getFirst_name() + " " + authenticatedUser.getLast_name();
-
-        NotificationsUser newNotification = new NotificationsUser();
-
-        newNotification.setId_user(requesterId);
-        newNotification.setUsername(user.getUsername());
-        newNotification.setId_dashboard_user(user.getConnectionsDashboard().getId_dashboard());
-        newNotification.setNotification_name("Connection Request Approved!");
-        newNotification.setNotification_description("Your connection request to the user" + " " + nameResponsibleApprovel + " " + "was successfully approved. You are friends!");
-        //newNotification.setInformation_data(nameResponsibleApprovel);
-        newNotification.setDate_of_notification(new Date());
-        newNotification.setNotification_reminder(false);
-        newNotification.setNotificationWasViewed(false);
-
-        user.addNewNotification(newNotification);
-        notificationsUserRepository.save(newNotification);
-        userRepository.save(user);
-
+        notificationServiceImpl.sendNotification(
+                requesterId,
+                "Connection Request Approved!",
+                notificationDescription,
+                false
+        );
     }
 
     @Transactional
@@ -157,8 +296,10 @@ public class ApproveDenyConnectionServiceImpl implements ApproveDenyConnectionSe
         dashboardUser.addNewConnection(completionRequest);
         connections.setDashboard(dashboardUser);
 
-        connectionsRepository.save(completionRequest);
+        Connections savedConnections = connectionsRepository.save(completionRequest);
         dashboardRepository.save(dashboardUser);
+
+
 
 
     }

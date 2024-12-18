@@ -32,6 +32,39 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>lambda</artifactId>
+			<version>2.20.2</version> 
+		</dependency>
+
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.20.100</version> <!-- Use a versão mais recente compatível -->
+		</dependency>
+
+		<!-- Dependência para gestão de credenciais -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>auth</artifactId>
+			<version>2.20.100</version> <!-- Atualize conforme necessário -->
+		</dependency>
+
+		<!-- Dependência para configuração da região -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>regions</artifactId>
+			<version>2.20.100</version>
+		</dependency>
+
+		<!-- Para configurar variáveis de ambiente (opcional, caso use dotenv para isso) -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>

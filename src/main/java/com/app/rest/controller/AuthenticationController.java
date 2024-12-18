@@ -1,10 +1,13 @@
 package com.app.rest.controller;
 
 import com.app.domain.model.ConnectionsDashboard;
+import com.app.domain.model.DashboardEvents;
+import com.app.domain.model.DashboardWishlists;
 import com.app.domain.model.ResponseDTO.AuthenticationDTO;
 import com.app.domain.model.ResponseDTO.ResponseTokenDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
 import com.app.domain.model.Users;
+import com.app.domain.model.Utilities.DashboardRequestsAndPending;
 import com.app.infra.security.TokenService;
 import com.app.service.UserService;
 import jakarta.validation.Valid;
@@ -46,9 +49,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("register")
-    public ResponseEntity register(@RequestBody Users user, UserDTO newUser, ConnectionsDashboard connections) {
+    public ResponseEntity register(@RequestBody Users user, UserDTO newUser, ConnectionsDashboard connections, DashboardRequestsAndPending dashboardRequestsAndPending,
+                                   DashboardWishlists dashboardWishlists, DashboardEvents dashboardEvents) {
 
-        UserDTO userCreated = userService.createNewUser(user, newUser, connections);
+        UserDTO userCreated = userService.createNewUser(user, newUser, connections, dashboardRequestsAndPending,
+                 dashboardWishlists, dashboardEvents);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
 

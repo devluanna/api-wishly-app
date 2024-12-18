@@ -25,11 +25,11 @@ public class Requests {
 
     private Integer id_owner_user; //id do owner
     private String username_owner; //username do owner
-    private Integer id_wishlist;
-    private String wishlist_name;
+    private Integer id_wishlist; //ID wishlis
+    private String wishlist_name; //wishlist name
 
-    private Date date_of_request;
-    private StatusSubscribers statusSubscribers;
+    private Date date_of_request; //data da solicitacao
+    private String statusSubscribers;
     private boolean isUserWithConnection; //SE O USUARIO TEM CONEXAO COM O OWNER?
 
 

@@ -1,4 +1,4 @@
-package com.app.domain.repository;
+package com.app.domain.repository.User;
 
 import com.app.domain.model.NotificationsUser;
 import org.springframework.data.jpa.repository.JpaRepository;

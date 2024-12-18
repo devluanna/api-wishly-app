@@ -23,7 +23,6 @@ public class PendingInvitations {
     private Integer id_user_guest;
     private String username_guest;
     private Date invitation_date;
-    private String url_share;
     private boolean isUserWithConnection; //SE O USUARIO TEM CONEXAO COM O OWNER
     private StatusSubscribers statusSubscribers; //inicia com WAITINGFORAPPROVAL
 

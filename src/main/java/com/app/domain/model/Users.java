@@ -2,6 +2,8 @@ package com.app.domain.model;
 
 import com.app.domain.model.DashboardWishlist.DashboardRequestsSubscribers;
 import com.app.domain.model.Utilities.DashboardRequestsAndPending;
+import com.app.domain.model.Wishlist.Wishlist;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +38,9 @@ public class Users implements UserDetails {
     private String confirm_code_activation;
     private Boolean tokenValidate;
     private Date tokenExpiration;
+    private Integer count_notifications_total = 0;
+    private Integer count_notifications_read = 0;// +1
+    private Integer count_notifications_unread = 0; //-1
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard")
@@ -45,11 +50,20 @@ public class Users implements UserDetails {
     @JoinColumn(name = "id_dashboard_requests_and_pending")
     private DashboardRequestsAndPending dashboardRequestsAndPending;
 
-    @JoinColumn(name = "id_notification")
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<NotificationsUser> notificationsUsers = new ArrayList<>();
 
-    public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status, ConnectionsDashboard connectionsDashboard) {
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_dashboard_wishlists")
+    private DashboardWishlists dashboardWishlists;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_dashboard_events")
+    private DashboardEvents dashboardEvents;
+    public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status, ConnectionsDashboard connectionsDashboard,
+                  DashboardRequestsAndPending dashboardRequestsAndPending, DashboardWishlists dashboardWishlists, DashboardEvents dashboardEvents) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.username = username;
@@ -61,6 +75,9 @@ public class Users implements UserDetails {
         this.role = UserRole.valueOf("USER");
         this.status = Status.valueOf("ACTIVATED");
         this.connectionsDashboard = connectionsDashboard;
+        this.dashboardRequestsAndPending = dashboardRequestsAndPending;
+        this.dashboardWishlists = dashboardWishlists;
+        this.dashboardEvents = dashboardEvents;
     }
 
     public void addNewNotification(NotificationsUser newNotification) {

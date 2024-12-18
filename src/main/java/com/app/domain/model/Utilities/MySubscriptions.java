@@ -2,6 +2,7 @@ package com.app.domain.model.Utilities;
 
 import com.app.domain.model.Wishlist.StatusSubscribers;
 import com.app.domain.model.Wishlist.StatusWishlistEvent;
+import com.app.domain.model.Wishlist.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,31 +20,25 @@ public class MySubscriptions {
 
     private Integer id_user;
     private String username;
-    private Integer id_wishlist;
-    private String name_wishlist;
-    private String description;
-    private Integer id_owner;
-    private String username_owner;
-    private boolean isUserWithConnectionOwner;
-    private boolean hasProductsByRecommendationPending; //voce possui produtos por recomendacao pendente nessa wishlist?
-    private Integer count_products_by_recommendation = 0;
-
-    private String uri_img_wishlist;
-    private String url_public_wishlist;
-    private String url_share; //caso tenha sido por convite colocar a url de compartilhamento
-    private String category;
-    private Integer count_likes = 0;
-    private Integer count_shares = 0;
-    private Integer count_copies = 0;
-    private StatusWishlistEvent status;
-    private Date creation_date;
-    private Date start_date;
-    private Date end_date;
     private Date date_you_joined;
 
-    private boolean haveLinkedEvent; //tem evento vinculado? se sim mostrar o evento/se nao.
-    private Integer id_event;
-    private String event_name;
+    private String uri_img_wishlist;
+    private Integer id_wishlist;
+    private String name_wishlist;
+    private Integer identity_wishlist;
+    private Visibility Visibility;
+    private String category;
+
+    private boolean isUserWithConnectionOwner;
+    private boolean hasProductsByRecommendationPending; //voce possui produtos por recomendacao pendente nessa wishlist?
+    private Integer count_products_by_recommendation_pending = 0; //produtos por recomendacao pendentes
+    private Integer count_products_by_recommendation_total = 0; //produtos por recomendacao adicionados
+
+
+    private Integer count_likes = 0;
+    private Integer count_subscribers_wishlist = 0;
+
+    private Date creation_date_wishlist;
 
     private StatusSubscribers statusSubscribers;
     private SubscriptionType subscriptionType; //FOI CONVIDADO OU SE INSCREVEU?

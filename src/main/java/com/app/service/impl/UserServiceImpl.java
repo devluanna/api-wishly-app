@@ -1,16 +1,27 @@
 package com.app.service.impl;
-import com.app.domain.model.ConnectionsDashboard;
+import com.app.domain.model.*;
+import com.app.domain.model.DashboardWishlist.PendingInvitations;
+import com.app.domain.model.DashboardWishlist.SubscriberRequests;
 import com.app.domain.model.ResponseDTO.ListUsersDTO;
 import com.app.domain.model.ResponseDTO.UpdateUserDTO;
 import com.app.domain.model.ResponseDTO.UserDTO;
-import com.app.domain.model.Status;
-import com.app.domain.model.Users;
-import com.app.domain.repository.ConnectionsDashboardRepository;
-import com.app.domain.repository.UserRepository;
+import com.app.domain.model.Utilities.DashboardRequestsAndPending;
+import com.app.domain.model.Utilities.Pending;
+import com.app.domain.model.Utilities.Requests;
+import com.app.domain.repository.ConnectionsUser.RequestsByOthersRepository;
+import com.app.domain.repository.ConnectionsUser.RequestsByYouRepository;
+import com.app.domain.repository.User.ConnectionsDashboardRepository;
+import com.app.domain.repository.User.DashboardEventsRepository;
+import com.app.domain.repository.User.DashboardWishlistsRepository;
+import com.app.domain.repository.User.UserRepository;
+import com.app.domain.repository.Wishlist.*;
+import com.app.events.users.UserUpdatedEvent;
 import com.app.exception.BusinessRuleException;
 import com.app.service.UserService;
+import com.app.utils.AuthenticationUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +41,36 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     ConnectionsDashboardRepository connectionsRepository;
+
+    @Autowired
+    DashboardWishlistsRepository dashboardWishlistsRepository;
+
+    @Autowired
+    DashboardEventsRepository dashboardEventsRepository;
+
+    @Autowired
+    DashboardRequestsAndPendingRepository dashboardRequestsAndPendingRepository;
+
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    RequestsByYouRepository requestsByYouRepository;
+
+    @Autowired
+    RequestsByOthersRepository requestsByOthersRepository;
+
+    @Autowired
+    PendingRepository pendingRepository;
+
+    @Autowired
+    MySubscriberRequestsRepository mySubscriberRequestsRepository;
+
+    @Autowired
+    PendingInvitationsRepository pendingInvitationsRepository;
+
+    @Autowired
+    SubscribersRequestsRepository subscribersRequestsRepository;
 
 
     @Override
@@ -51,7 +92,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO createNewUser(Users user, UserDTO newUser, ConnectionsDashboard connections) {
+    public UserDTO createNewUser(Users user, UserDTO newUser, ConnectionsDashboard connections, DashboardRequestsAndPending dashboardRequestsAndPending,
+                                 DashboardWishlists dashboardWishlists, DashboardEvents dashboardEvents) {
         validationUsername(user);
         validationEmail(user);
 
@@ -70,9 +112,11 @@ public class UserServiceImpl implements UserService {
                 encryptedConfirmPassword,
                 newUser.role(),
                 newUser.status(),
-                connections
+                connections,
+                dashboardRequestsAndPending,
+                dashboardWishlists,
+                dashboardEvents
         );
-
 
         userCreated.setPassword(encryptedPassword);
         userCreated.setFirst_name(user.getFirst_name());
@@ -82,12 +126,36 @@ public class UserServiceImpl implements UserService {
         userCreated.setDate_birthday(user.getDate_birthday());
         userCreated.setGender(user.getGender());
         userCreated.setConnectionsDashboard(connections);
+        userCreated.setDashboardRequestsAndPending(dashboardRequestsAndPending);
+        userCreated.setDashboardWishlists(dashboardWishlists);
+        userCreated.setDashboardEvents(dashboardEvents);
 
         Users savedUser = userRepository.save(userCreated);
 
-        validateFieldsConnectionsDashboard(connections, userCreated);
+        validateEntitys(connections,dashboardWishlists, dashboardEvents, dashboardRequestsAndPending, userCreated);
 
         return responseRegisterUserDTO(savedUser);
+
+    }
+
+    public void validateEntitys(ConnectionsDashboard connections, DashboardWishlists dashboardWishlists,
+                                DashboardEvents dashboardEvents, DashboardRequestsAndPending dashboardRequestsAndPending,
+                                Users userCreated){
+        validateFieldsConnectionsDashboard(connections, userCreated);
+        validateFieldsWishlistDashboard(dashboardWishlists, userCreated);
+        validateFieldsEventsDashboard(dashboardEvents, userCreated);
+        validateFieldsDashboardRequestsPending(dashboardRequestsAndPending, userCreated);
+    }
+
+    public void validateFieldsDashboardRequestsPending(DashboardRequestsAndPending dashboardRequestsAndPending, Users userCreated) {
+
+        if(userCreated != null) {
+            dashboardRequestsAndPending.setId_responsible_user(userCreated.getId_user());
+            dashboardRequestsAndPending.setResponsible_username(userCreated.getUsername());
+
+            dashboardRequestsAndPendingRepository.save(dashboardRequestsAndPending);
+
+        }
 
     }
 
@@ -104,6 +172,31 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    public void validateFieldsWishlistDashboard(DashboardWishlists dashboardWishlists, Users userCreated) {
+
+        if(userCreated != null) {
+            dashboardWishlists.setId_responsible_user(userCreated.getId_user());
+            dashboardWishlists.setResponsible_username(userCreated.getUsername());
+
+            dashboardWishlistsRepository.save(dashboardWishlists);
+
+        }
+
+    }
+
+    public void validateFieldsEventsDashboard(DashboardEvents dashboardEvents, Users userCreated) {
+
+        if(userCreated != null) {
+            dashboardEvents.setId_responsible_user(userCreated.getId_user());
+            dashboardEvents.setResponsible_username(userCreated.getUsername());
+
+            dashboardEventsRepository.save(dashboardEvents);
+
+        }
+
+    }
+
+
     public UserDTO responseRegisterUserDTO(Users savedUser) {
         UserDTO userDto = new UserDTO(
                 savedUser.getId_user(),
@@ -116,7 +209,9 @@ public class UserServiceImpl implements UserService {
                 savedUser.getPassword(),
                 savedUser.getRole(),
                 savedUser.getStatus(),
-                savedUser.getConnectionsDashboard().getId_dashboard()
+                savedUser.getConnectionsDashboard().getId_dashboard(),
+                savedUser.getDashboardRequestsAndPending().getId_dashboard_requests_and_pending(),
+                savedUser.getDashboardWishlists().getId_dashboard_wishlists(), savedUser.getDashboardEvents().getId_dashboard_events()
         );
 
         return userDto;
@@ -126,7 +221,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UpdateUserDTO toUpdateUser(Users userAccount, Integer id_user, UpdateUserDTO updateUserDTO) {
 
+        AuthenticationUtils.getAuthenticatedUser();
+
         Users selectedUser = findById(id_user);
+
+        Users authenticated = AuthenticationUtils.validateUser(() -> selectedUser.getId_user());
+
+
+        if (updateUserDTO.username() != null && !updateUserDTO.username().equals(selectedUser.getUsername())) {
+            validationUsername(new Users(updateUserDTO.username(), null));
+        }
+
+        if (updateUserDTO.email() != null && !updateUserDTO.email().equals(selectedUser.getEmail())) {
+            validationEmail(new Users(updateUserDTO.email(), null));
+        }
+
 
         selectedUser.setFirst_name(updateUserDTO.first_name());
         selectedUser.setLast_name(updateUserDTO.last_name());
@@ -139,7 +248,94 @@ public class UserServiceImpl implements UserService {
 
         Users savedNewInfoUser = userRepository.save(userAccount);
 
+        eventPublisher.publishEvent(new UserUpdatedEvent(this, savedNewInfoUser));
+        validateOthersFields(savedNewInfoUser, authenticated);
+        validateFieldsRequestsByYou(savedNewInfoUser, authenticated);
+        validateFieldsRequestsByOthers(savedNewInfoUser, authenticated);
+
         return responseUpdateUserDTO(savedNewInfoUser);
+
+    }
+
+    private void validateOthersFields(Users savedNewInfoUser, Users authenticated) {
+        //REFATORAR PARA NAO FICAR REPETITIVO
+        validateFieldsRequestsByYou(savedNewInfoUser, authenticated);
+        validateFieldsRequestsByOthers(savedNewInfoUser, authenticated);
+        validateFieldsMyPending(savedNewInfoUser, authenticated);
+        validateFieldsMyRequests(savedNewInfoUser, authenticated);
+        validateFieldsPendingInvitation(savedNewInfoUser, authenticated);
+        validateFieldsSubscribersRequests(savedNewInfoUser, authenticated);
+    }
+
+    private void validateFieldsPendingInvitation(Users savedNewInfoUser, Users authenticated) {
+        List<PendingInvitations> invitationsExist = pendingInvitationsRepository.findAll();
+
+        for(PendingInvitations req : invitationsExist) {
+            if(req.getId_user_guest().equals(authenticated.getId_user())) {
+                req.setUsername_guest(savedNewInfoUser.getUsername());
+
+                pendingInvitationsRepository.saveAll(invitationsExist);
+            }
+        }
+    }
+
+    private void validateFieldsSubscribersRequests(Users savedNewInfoUser, Users authenticated) {
+        List<SubscriberRequests> subscribersRequestsExist = subscribersRequestsRepository.findAll();
+
+        for(SubscriberRequests req : subscribersRequestsExist) {
+            if(req.getId_user().equals(authenticated.getId_user())) {
+                req.setUsername(savedNewInfoUser.getUsername());
+
+                subscribersRequestsRepository.saveAll(subscribersRequestsExist);
+            }
+        }
+    }
+
+    private void validateFieldsMyRequests(Users savedNewInfoUser, Users authenticated) {
+        List<Requests> requestsExist = mySubscriberRequestsRepository.findAll();
+
+        for(Requests req : requestsExist) {
+            if(req.getId_user().equals(authenticated.getId_user())) {
+                req.setUsername(savedNewInfoUser.getUsername());
+
+                mySubscriberRequestsRepository.saveAll(requestsExist);
+            }
+        }
+    }
+
+    private void validateFieldsMyPending(Users savedNewInfoUser, Users authenticated) {
+        List<Pending> pendingExist = pendingRepository.findAll();
+
+        for(Pending req : pendingExist) {
+            if(req.getId_user_guest().equals(authenticated.getId_user())) {
+                req.setUsername_guest(savedNewInfoUser.getUsername());
+
+                pendingRepository.saveAll(pendingExist);
+            }
+        }
+    }
+    private void validateFieldsRequestsByOthers(Users savedNewInfoUser, Users authenticated) {
+        List<RequestsByOthers> requestsByOthersExist = requestsByOthersRepository.findAll();
+
+        for(RequestsByOthers req : requestsByOthersExist) {
+            if(req.getId_user_requestor().equals(authenticated.getId_user())) {
+                req.setUsername(savedNewInfoUser.getUsername());
+
+                requestsByOthersRepository.saveAll(requestsByOthersExist);
+            }
+        }
+    }
+
+    private void validateFieldsRequestsByYou(Users savedNewInfoUser, Users authenticated) {
+        List<RequestsByYou> requestsByYouExist = requestsByYouRepository.findAll();
+
+            for(RequestsByYou req : requestsByYouExist) {
+                if(req.getId_user_to_add().equals(authenticated.getId_user())) {
+                    req.setUsername(savedNewInfoUser.getUsername());
+
+                    requestsByYouRepository.saveAll(requestsByYouExist);
+                }
+            }
     }
 
     public UpdateUserDTO responseUpdateUserDTO(Users savedNewInfoUser) {

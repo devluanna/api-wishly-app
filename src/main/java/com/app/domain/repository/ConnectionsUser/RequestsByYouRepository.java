@@ -1,4 +1,4 @@
-package com.app.domain.repository;
+package com.app.domain.repository.ConnectionsUser;
 
 import com.app.domain.model.RequestsByYou;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -41,8 +41,8 @@ public class ConnectionsDashboard {
     private List<RequestsByOthers> requestsByOthers = new ArrayList<>();
 
     public void addNewRequest(RequestsByYou newRequests) {
-        if (this.requestsByOthers == null) {
-            this.requestsByOthers = new ArrayList<>();
+        if (this.requestsByYou == null) {
+            this.requestsByYou = new ArrayList<>();
         }
 
         this.requestsByYou.add(newRequests);

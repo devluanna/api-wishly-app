@@ -4,7 +4,7 @@ import com.app.domain.model.ResponseDTO.PasswordDTO;
 import com.app.domain.model.ResponseDTO.AccountRecoveryDTO;
 import com.app.domain.model.Status;
 import com.app.domain.model.Users;
-import com.app.domain.repository.UserRepository;
+import com.app.domain.repository.User.UserRepository;
 import com.app.exception.BusinessRuleException;
 import com.app.service.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
