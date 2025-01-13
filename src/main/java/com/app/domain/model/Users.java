@@ -1,8 +1,6 @@
 package com.app.domain.model;
 
-import com.app.domain.model.DashboardWishlist.DashboardRequestsSubscribers;
 import com.app.domain.model.Utilities.DashboardRequestsAndPending;
-import com.app.domain.model.Wishlist.Wishlist;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -62,6 +60,7 @@ public class Users implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_dashboard_events")
     private DashboardEvents dashboardEvents;
+
     public Users (String first_name, String last_name, String username, String email, Date date_birthday, String gender, String password, String confirm_password, UserRole role, Status status, ConnectionsDashboard connectionsDashboard,
                   DashboardRequestsAndPending dashboardRequestsAndPending, DashboardWishlists dashboardWishlists, DashboardEvents dashboardEvents) {
         this.first_name = first_name;

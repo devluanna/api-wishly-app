@@ -1,6 +1,8 @@
 package com.app.domain.model.DashboardWishlist;
 
 import com.app.domain.model.Product.ProductList;
+import com.app.domain.model.Product.ReferenceLinks;
+import com.app.domain.model.Product.RequestsProducts;
 import com.app.domain.model.Wishlist.Wishlist;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -36,6 +38,9 @@ public class DashboardProducts {
     @OneToOne(mappedBy = "dashboardAllProducts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Wishlist wishlist;
 
-
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "dashboardProducts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<RequestsProducts> requestsProducts;
 
 }

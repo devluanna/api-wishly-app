@@ -1,4 +1,4 @@
-package com.app.domain.repository.Wishlist;
+package com.app.domain.repository.Products;
 
 import com.app.domain.model.Product.ProductList;
 import org.springframework.data.jpa.repository.JpaRepository;

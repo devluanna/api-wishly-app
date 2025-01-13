@@ -17,11 +17,17 @@ public class ReferenceLinks {
     private String name_link;
     private String reference_link;
 
+    private Integer id_request;
+
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_product")
     @ToString.Exclude
     private ProductList productList;
 
-
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_product_request")
+    @ToString.Exclude
+    private RequestsProducts requestsProduct;
 }

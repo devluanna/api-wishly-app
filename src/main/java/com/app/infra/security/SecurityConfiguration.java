@@ -29,9 +29,10 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .securityMatcher(antMatcher("/h2-console"))
+                .securityMatcher(antMatcher("**/h2-console"))
 
                 .authorizeHttpRequests(authorize -> authorize
+                        //.requestMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
                         .requestMatchers(antMatcher(HttpMethod.POST, "/auth/login")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/user/register")).permitAll()
                        // .requestMatchers(HttpMethod.PUT, "/user/password/{id_user}").authenticated()

@@ -10,6 +10,7 @@ import com.app.domain.model.ResponseDTO.WishlistDTO;
 import com.app.domain.model.Users;
 import com.app.domain.model.Utilities.MySubscriptions;
 import com.app.domain.model.Wishlist.*;
+import com.app.domain.repository.Products.DashboardProductsRepository;
 import com.app.domain.repository.Wishlist.*;
 import com.app.events.wishlist.WishlistUpdatedEvent;
 import com.app.exception.BusinessRuleException;
