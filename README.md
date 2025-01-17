@@ -58,7 +58,7 @@ classDiagram
 <br />
 - Typescript
 <br />
-✅ Front-End Repository: [https://github.com/devluanna/project-angular-login](https://github.com/devluanna/wishlyapp-frontend)
+✅ Front-End Repository: (https://github.com/devluanna/wishlyapp-frontend)
 <br />
 <br />
 
