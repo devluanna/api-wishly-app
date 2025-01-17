@@ -1,5 +1,5 @@
 # Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.
-This API was developed for an Angular project (where I developed a front with a login screen with Authentication and Authorization)
+This API was developed for an Angular project (where I developed a front with a login screen with Authentication and Authorization) [most updated branch > DEVELOPER]
 <br />
 💻 Technologies used:
 - Java 17
@@ -26,28 +26,62 @@ respecting DESIGN PATTERNS AND SOLID PRINCIPLES.
 <br />
 <br />
 
+The project is still under development and some features are still being adjusted for Step Function and Lambdas.
+<br />
+<br />
+
 ``` mermaid
 
 classDiagram
     class User {
-        -firstName: String
-        -lastName: String
-        -email: String
-        -username: String
-        -password: String
-        -identity: String
-        -status: String
-        -profileRole: String
-        -Dashbboard[] dashboard
+        -Integer id_user
+        -String first_name
+        -String last_name
+        -String username
+        -String email
+        -Date date_birthday
+        -String gender
+        -String password
+        -String confirm_password
+        -UserRole role
+        -Status status
+        -Boolean tokenValidate
+        -Date tokenExpiration
+        -Integer count_notifications_total
+        -Integer count_notifications_read
+        -Integer count_notifications_unread
     }
 
-    class Dashboard {
-        -Informations[] informationsBasics
+    class ConnectionsDashboard {
+        -id_dashboard: Integer
+        -String connectionDetails
     }
 
+    class DashboardRequestsAndPending {
+        -id_dashboard: Integer
+        -String pendingRequests
+    }
 
-   User "1" *-- "1" Dashboard
+    class NotificationsUser {
+        -id_notification: Integer
+        -String notificationDetails
+    }
 
+    class DashboardWishlists {
+        -id_dashboard: Integer
+        -String wishlistDetails
+    }
+
+    class DashboardEvents {
+        -id_dashboard: Integer
+        -String eventDetails
+    }
+
+    User "1" --> "1" ConnectionsDashboard
+    User "1" --> "1" DashboardRequestsAndPending
+    User "1" --> "*" NotificationsUser
+    User "1" --> "1" DashboardWishlists
+    User "1" --> "1" DashboardEvents
 ```
 <br />
 ✨ This is a project for my personal development as FullStack, using Java on the backend, and Angular with Typescript on the front end
