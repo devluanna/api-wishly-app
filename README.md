@@ -62,12 +62,92 @@ classDiagram
         -count_requests_by_others = 0
     }
 
+
+    class Connections {
+        - Integer id_connection
+        - Integer id_user_connection
+        - String name
+        - String username
+        - StatusConnections statusConnections
+        - Boolean profileIsOpenForConnections
+        - Date connection_date
+    }
+
+   
+    class RequestsByYou {
+        - Integer id_requests
+        - Integer id_user_to_add
+        - Integer id_dashboard_user_to_add
+        - String username
+        - Date connection_date
+        - StatusConnections statusConnections
+        - ConnectionsDashboard dashboardRequester
+    }
+
+    class RequestsByOthers {
+        - Integer id_requests_pending
+        - Integer id_user_requestor
+        - Integer id_dashboard_user_requestor
+        - String username
+        - Date connection_date
+        - StatusConnections statusConnections
+        - ConnectionsDashboard dashboard
+    }
+
     class DashboardRequestsAndPending {
         -id_responsible_user: Integer
         -responsible_username: String
         -count_requests = 0
         -count_pending = 0
         -count_subscriptions = 0
+    }
+
+    class Pending {
+        - Integer id_pending
+        - Integer id_user_guest
+        - String username_guest
+        - Integer id_owner_user
+        - String username_owner
+        - Integer id_wishlist
+        - String wishlist_name
+        - Date date_invited
+        - StatusSubscribers statusSubscribers
+        - boolean isUserWithConnection
+    }
+
+    class Requests {
+        - Integer id_request
+        - Integer id_user
+        - String username
+        - Integer id_owner_user
+        - String username_owner
+        - Integer id_wishlist
+        - String wishlist_name
+        - Date date_of_request
+        - String statusSubscribers
+        - boolean isUserWithConnection
+    }
+
+    class MySubscriptions {
+        - Integer id_my_subscription
+        - Integer id_user
+        - String username
+        - Date date_you_joined
+        - String uri_img_wishlist
+        - Integer id_wishlist
+        - String name_wishlist
+        - Integer identity_wishlist
+        - Visibility Visibility
+        - String category
+        - boolean isUserWithConnectionOwner
+        - boolean hasProductsByRecommendationPending
+        - Integer count_products_by_recommendation_pending
+        - Integer count_products_by_recommendation_total
+        - Integer count_likes
+        - Integer count_subscribers_wishlist
+        - Date creation_date_wishlist
+        - StatusSubscribers statusSubscribers
+        - SubscriptionType subscriptionType
     }
 
     class NotificationsUser {
@@ -209,6 +289,20 @@ classDiagram
         -id_responsible_user: Integer
         -responsible_username: String
         -count_events = 0
+    }
+
+     class Events {
+        - Integer id_event
+        - String event_name
+        - String event_description
+        - String category
+        - Integer id_owner
+        - String username_owner
+        - String status
+        - Date creation_date
+        - Date start_date
+        - Date end_date
+        - Date last_update_date
     }
 
     User "1" --> "1" ConnectionsDashboard
