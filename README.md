@@ -55,6 +55,12 @@ classDiagram
     class ConnectionsDashboard {
         -id_dashboard: Integer
         -String connectionDetails
+        -id_responsible_user;
+        -responsible_username;
+        -responsible_user_email;
+        -count_friends = 0;
+        -count_requests_by_you = 0; 
+        -count_requests_by_others = 0;
     }
 
     class DashboardRequestsAndPending {
@@ -82,6 +88,11 @@ classDiagram
     User "1" --> "*" NotificationsUser
     User "1" --> "1" DashboardWishlists
     User "1" --> "1" DashboardEvents
+    ConnectionsDashboard "1" --> "*" Connections
+    ConnectionsDashboard "1" --> "*" RequestsByYou
+    ConnectionsDashboard "1" --> "*" RequestsByOthers
+
+
 ```
 <br />
 ✨ This is a project for my personal development as FullStack, using Java on the backend, and Angular with Typescript on the front end
