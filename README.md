@@ -188,6 +188,22 @@ classDiagram
         - StatusSubscribers statusSubscribers
     }
 
+    class Tags {
+        - Integer id_tag
+        - String tag_name
+    }
+
+    class DashboardProducts {
+        - Integer id_dashboard_products
+        - Integer id_wishlist
+        - Integer count_products
+        - Integer count_recommended_products_pending
+        - Integer count_recommended_products_approved
+        - Integer count_reserved_products
+        - List~ProductList~ productsList
+        - List~RequestsProducts~ requestsProducts
+    }
+
      class DashboardEvents {
         -id_dashboard_events: Integer
         -id_responsible_user: Integer
@@ -216,6 +232,8 @@ classDiagram
     DashboardRequestsSubscribers "1" --> "1" Wishlist
     DashboardRequestsSubscribers "1" --> "*" SubscriberRequests
     DashboardRequestsSubscribers "1" --> "*" PendingInvitations
+    DashboardProducts  "1" --> "*" ProductList 
+    DashboardProducts  "1" --> "*" RequestsProducts
 
 ```
 <br />
