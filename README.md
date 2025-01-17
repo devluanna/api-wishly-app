@@ -1,35 +1,64 @@
-# Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.
-This API was developed for an Angular project (where I developed a front with a login screen with Authentication and Authorization) [most updated branch > DEVELOPER]
+## 📜 Project Description
+Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.
+WishlyApp is a wishlist creation and management system, with advanced features for authentication, authorization, and product and event management.
+This repository represents the backend of the application, developed with Java 17 and Spring Boot. It was designed to be integrated with the frontend, which uses Angular and TypeScript. [most updated branch > DEVELOPER]
 <br />
 💻 Technologies used:
-- Java 17
-- Spring Boot Framework
 - Maven
 - In-memory database using H2
-- Database
-- Local/HOM MYSQL database (PROD in RDS on AWS)
+- Database Local/HOM MYSQL database (PROD in RDS on AWS)
+<br />
+<br />
+## 🎯 Features
+<br />
+📶 Where we have the following functionalities:<br />
+- Wishlist Creation:
+Users can create public or private wishlists by associating categories, products, and events;
+- Wishlist Subscription:
+Users can subscribe to public wishlists automatically;
+Subscriptions to private wishlists require owner approval;
+Product Recommendations;
+- Guests can recommend products to the wishlist owner.
+The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;
+- Event Creation:
+Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
+<br />
+<br />
+## 📚 Business Rule
+<br />
+- Creating Wishlists:
+ - Any authenticated user can create wishlists.
+ - A wishlist can be public or private.
+- Subscribing to Wishlists:
+ - Public wishlists: Subscription is automatic.
+ - Private wishlists: The wishlist owner must approve or deny the subscription.
+- Guests and Products:
+ - Users with approved connections can be invited to a private wishlist.
+ - Only users connected to the owner can nominate products.
+- Events and Wishlists:
+ - Each event must be linked to a single wishlist.
+ - The status of an event can be updated by the owner.
+<br />
+<br />
+## 🛠️ Observations on the Code
+<br />
+The development of this project was started with the purpose of learning and applying backend and systems architecture concepts.<br />
+The code reflects my evolution as a developer since the beginning. Some parts were intentionally left unrefactored so that I can revisit and improve later.
+<br />
+The latest commits already include significant efforts to adopt good practices, such as Design Patterns and SOLID principles.
+<br />
+<br />
 
-📶 The idea behind the system is: Wishlist creation system, where we have the following functionalities:<br />
-- Create wishlist;
-- Subscribe to a Wishlist;
-  - When subscribing to a PRIVATE wishlist, the Wishlist OWNER must APPROVE or DENY;
-- GUEST can indicate a product to the Wishlist OWNER
-  - The product indication flow is being done using AWS Lambda, Step Function and SQS.
-- Create events;
-- Link events to a WISHLIST.
+## 📶 Project Status
 <br />
+The project is under continuous development, with additional features being implemented, such as:
 <br />
-The code has been under development for longer than the repository is showing, and it shows my evolution from the beginning until now. It has not been refactored, because later I want to understand what needs to be improved.
-<br />
-So initially, some Services and business rules will not be in perfect condition, and I decided to leave them that way for now. In the last commits, I have already been working hard to make the code cleaner, more practical,<br />
-respecting DESIGN PATTERNS AND SOLID PRINCIPLES.
+Full integration with AWS Step Functions and Lambda Functions.
+Refining business rules for subscriptions and products.
 <br />
 <br />
 
-The project is still under development and some features are still being adjusted for Step Function and Lambdas.
-<br />
-<br />
-## Below is the UML diagram with the classes and their relationships.
+## 📊 Below is the UML diagram with the classes and their relationships.
 <br />
 
 ``` mermaid
@@ -350,3 +379,6 @@ Screen Login:<br/>
 <br /><br />
 Screen Signup: <br/>
 ![image](https://github.com/user-attachments/assets/221c2aba-6059-4aed-899c-e57000f8af3d)
+<br/>
+<br/>
+## 🌟 Este projeto é um marco na minha evolução como desenvolvedora FullStack. Feedbacks e contribuições são sempre bem-vindos! 😊
