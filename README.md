@@ -53,34 +53,46 @@ classDiagram
     }
 
     class ConnectionsDashboard {
-        -id_dashboard: Integer
-        -String connectionDetails
-        -id_responsible_user;
-        -responsible_username;
-        -responsible_user_email;
-        -count_friends = 0;
-        -count_requests_by_you = 0; 
-        -count_requests_by_others = 0;
+        -id_dashboard: Integer: Integer
+        -id_responsible_user: Integer
+        -responsible_username: String
+        -responsible_user_emai: String
+        -count_friends = 0
+        -count_requests_by_you = 0
+        -count_requests_by_others = 0
     }
 
     class DashboardRequestsAndPending {
-        -id_dashboard: Integer
-        -String pendingRequests
+        -id_responsible_user: Integer
+        -responsible_username: String
+        -count_requests = 0
+        -count_pending = 0
+        -count_subscriptions = 0
     }
 
     class NotificationsUser {
-        -id_notification: Integer
-        -String notificationDetails
+       -id_notification: Integer
+       -id_dashboard_user: Integer
+       -username: String
+       -notification_name: String
+       -notification_description: String
+       -Boolean notificationWasViewed = false
+       -date_of_notification: Date
+       -Boolean notification_reminder
     }
 
     class DashboardWishlists {
-        -id_dashboard: Integer
-        -String wishlistDetails
+        -id_dashboard_wishlists: Integer
+        -id_responsible_user: Integer
+        -responsible_username: String
+        -count_wishlists = 0
     }
 
     class DashboardEvents {
-        -id_dashboard: Integer
-        -String eventDetails
+        -id_dashboard_events: Integer
+        -id_responsible_user: Integer
+        -responsible_username: String
+        -count_events = 0
     }
 
     User "1" --> "1" ConnectionsDashboard
@@ -91,6 +103,10 @@ classDiagram
     ConnectionsDashboard "1" --> "*" Connections
     ConnectionsDashboard "1" --> "*" RequestsByYou
     ConnectionsDashboard "1" --> "*" RequestsByOthers
+    DashboardRequestsAndPending "1" --> "*" Requests
+    DashboardRequestsAndPending "1" --> "*" Pending
+    DashboardRequestsAndPending "1" --> "*" MySubscriptions
+    DashboardWishlists "1" --> "*" Wishlist
 
 
 ```
