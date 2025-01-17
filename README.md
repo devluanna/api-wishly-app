@@ -88,6 +88,38 @@ classDiagram
         -count_wishlists = 0
     }
 
+   class Wishlist {
+        - Integer id_wishlist
+        - Integer wishlist_identity
+        - String wishlist_name
+        - String url_img
+        - String description
+        - Integer id_owner
+        - String username_owner
+        - String visibility
+        - Boolean isRequiredRequest
+        - String url_share
+        - String category
+        - String sub_category
+        - String status_wishlist
+        - Date creation_date
+        - Date last_update_date
+        - Boolean haveLinkedEvent
+        - String name_event_linked
+        - Date start_date
+        - Date end_date
+        - Boolean useEventDate
+        - Boolean enableProductsByRecommendation
+        - Boolean enablesProductReservations
+        - Boolean isACopiedWishlist
+        - Integer count_likes
+        - Integer count_shares
+        - Integer count_copies
+        - Integer count_total_subscribers
+        - Integer count_recommended_products_pending
+    }
+
+
     class DashboardEvents {
         -id_dashboard_events: Integer
         -id_responsible_user: Integer
@@ -107,7 +139,12 @@ classDiagram
     DashboardRequestsAndPending "1" --> "*" Pending
     DashboardRequestsAndPending "1" --> "*" MySubscriptions
     DashboardWishlists "1" --> "*" Wishlist
-
+    DashboardEvents "1" --> "*" Events
+    Wishlist "1" --> "*" Tags
+    Wishlist "1" --> "1" EventsInWishlists
+    Wishlist "1" --> "*" WishlistSubscribers
+    Wishlist "1" --> "1" DashboardRequestsSubscribers
+    Wishlist "1" --> "1" DashboardProducts
 
 ```
 <br />
