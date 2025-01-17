@@ -88,7 +88,7 @@ classDiagram
         -count_wishlists = 0
     }
 
-   class Wishlist {
+    class Wishlist {
         - Integer id_wishlist
         - Integer wishlist_identity
         - String wishlist_name
@@ -119,8 +119,76 @@ classDiagram
         - Integer count_recommended_products_pending
     }
 
+     class DashboardRequestsSubscribers {
+        - Integer id_dashboard_requests
+        - Integer id_responsible_user
+        - Integer id_wishlist
+        - String username_responsible
+        - String name_wishlist
+        - Integer identity_wishlist
+        - Integer count_subscriber_requests
+        - Integer count_pending_invitations
+    }
 
-    class DashboardEvents {
+     class SubscriberRequests {
+        - Integer id_request
+        - Integer id_user
+        - String username
+        - String status_request
+    }
+
+     class PendingInvitations {
+        - Integer id_invitation
+        - Integer id_user
+        - String username
+        - String status_invitation
+    }
+
+
+    class EventsInWishlists {
+        - Integer id_events_in_wishlists
+        - Integer id_event
+        - String event_name
+        - String status
+        - Date creation_date
+        - Date last_update_date
+        - Date start_date
+        - Date end_date
+    }
+
+    class WishlistSubscribers {
+        - Integer id_subscriber
+        - Integer id_user
+        - String username
+        - Date date_you_joined
+        - StatusSubscribers statusSubscribers
+        - boolean isUserWithConnection
+    }
+
+    class PendingInvitations {
+        - Integer id_pending_invitation
+        - Integer id_user_guest
+        - String username_guest
+        - Date invitation_date
+        - boolean isUserWithConnection
+        - StatusSubscribers statusSubscribers
+        - Integer id_wishlist
+        - String name_wishlist
+        - Integer id_owner
+    }
+
+    class SubscriberRequests {
+        - Integer id_subscriber_request
+        - Integer id_user
+        - String username
+        - Date date_user_requested
+        - Integer id_wishlist
+        - String name_wishlist
+        - boolean isUserWithConnection
+        - StatusSubscribers statusSubscribers
+    }
+
+     class DashboardEvents {
         -id_dashboard_events: Integer
         -id_responsible_user: Integer
         -responsible_username: String
@@ -145,6 +213,9 @@ classDiagram
     Wishlist "1" --> "*" WishlistSubscribers
     Wishlist "1" --> "1" DashboardRequestsSubscribers
     Wishlist "1" --> "1" DashboardProducts
+    DashboardRequestsSubscribers "1" --> "1" Wishlist
+    DashboardRequestsSubscribers "1" --> "*" SubscriberRequests
+    DashboardRequestsSubscribers "1" --> "*" PendingInvitations
 
 ```
 <br />
