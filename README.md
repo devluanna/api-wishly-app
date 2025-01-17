@@ -10,13 +10,10 @@ Backend:
  - Java 17;
  - Spring Boot Framework;
  - Maven;
-Database:
- - H2 (in-memory, for local testing);
+ - Database H2 (in-memory, for local testing);
  - MySQL (in production, hosted on Amazon RDS);
-Frontend:
- - Angular;
- - TypeScript;
- - Repositório do Frontend: (https://github.com/devluanna/wishlyapp-frontend)
+> Repositório do Frontend: (https://github.com/devluanna/wishlyapp-frontend)
+
 <br />
 <br />
 
@@ -24,13 +21,13 @@ Frontend:
 <br />
 📶 Where we have the following functionalities:<br />
 - **Wishlist Creation**
-- Users can create public or private wishlists by associating categories, products, and events;<br />
-- Wishlist Subscription:
-- Users can subscribe to public wishlists automatically;
-- Subscriptions to private wishlists require owner approval;
+Users can create public or private wishlists by associating categories, products, and events;<br />
+Wishlist Subscription:
+Users can subscribe to public wishlists automatically;
+Subscriptions to private wishlists require owner approval;
 - Product Recommendations;
-- Guests can recommend products to the wishlist owner.
-- The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;
+Guests can recommend products to the wishlist owner.
+The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;
 - Event Creation:
 Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
 <br />
