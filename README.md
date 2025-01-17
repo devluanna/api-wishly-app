@@ -29,7 +29,8 @@ respecting DESIGN PATTERNS AND SOLID PRINCIPLES.
 The project is still under development and some features are still being adjusted for Step Function and Lambdas.
 <br />
 <br />
-
+# Below is the UML diagram with the classes and their relationships.
+<br />
 ``` mermaid
 
 classDiagram
