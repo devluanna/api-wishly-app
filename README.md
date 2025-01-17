@@ -30,7 +30,11 @@ Subscriptions to private wishlists require owner approval;<br />
 Guests can recommend products to the wishlist owner.<br />
 The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;<br />
 - Event Creation:<br />
-Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
+Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;<br />
+- Creating Connections:<br />
+Users can create connections, i.e. add other users to their list of connections.<br />
+To view another user's wishlists, both users must have a mutual connection (i.e. both must have added each other).<br />
+Connections can be accepted or rejected, and the status of connections is managed (pending, accepted or declined).<br />
 <br />
 <br />
 
