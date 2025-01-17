@@ -20,6 +20,7 @@ Backend:
 ## 🎯 Features
 <br />
 📶 Where we have the following functionalities:<br />
+<br />
 - Wishlist create:<br />
 Users can create public or private wishlists by associating categories, products, and events;<br />
 - Wishlist Subscription:<br />
@@ -35,18 +36,18 @@ Events can be created and associated with a specific wishlist, allowing for the 
 
 ## 📚 Business Rule
 <br />
-- Creating Wishlists:
- - Any authenticated user can create wishlists.
- - A wishlist can be public or private.
-- Subscribing to Wishlists:
- - Public wishlists: Subscription is automatic.
- - Private wishlists: The wishlist owner must approve or deny the subscription.
-- Guests and Products:
- - Users with approved connections can be invited to a private wishlist.
- - Only users connected to the owner can nominate products.
-- Events and Wishlists:
- - Each event must be linked to a single wishlist.
- - The status of an event can be updated by the owner.
+- Creating Wishlists:<br />
+Any authenticated user can create wishlists.<br />
+A wishlist can be public or private.<br />
+- Subscribing to Wishlists:<br />
+Public wishlists: Subscription is automatic.<br />
+Private wishlists: The wishlist owner must approve or deny the subscription.<br />
+- Guests and Products:<br />
+Users with approved connections can be invited to a private wishlist.<br />
+Only users connected to the owner can nominate products.<br />
+- Events and Wishlists:<br />
+Each event must be linked to a single wishlist.<br />
+The status of an event can be updated by the owner.
 <br />
 <br />
 
