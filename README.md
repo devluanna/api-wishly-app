@@ -20,14 +20,14 @@ Backend:
 ## 🎯 Features
 <br />
 📶 Where we have the following functionalities:<br />
-⚡ - **Login screen**;
+- Wishlist create:<br />
 Users can create public or private wishlists by associating categories, products, and events;<br />
 - Wishlist Subscription:<br />
 Users can subscribe to public wishlists automatically;<br />
-Subscriptions to private wishlists require owner approval;
+Subscriptions to private wishlists require owner approval;<br />
 - Product Recommendations;<br />
 Guests can recommend products to the wishlist owner.<br />
-The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;
+The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;<br />
 - Event Creation:<br />
 Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
 <br />
