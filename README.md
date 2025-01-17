@@ -63,7 +63,7 @@ classDiagram
 <br />
 
 Screen Login:<br/>
-![alt text](utils-readme/screen-login.png)
+![image](https://github.com/user-attachments/assets/1ebf1c68-2b46-44ac-aaee-b39ef4ede902)
 <br /><br />
 Screen Signup: <br/>
-![alt text](utils-readme/screen-signup.png)
+![image](https://github.com/user-attachments/assets/221c2aba-6059-4aed-899c-e57000f8af3d)
