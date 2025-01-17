@@ -1,7 +1,8 @@
 ## 📜 Project Description
-Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.
-WishlyApp is a wishlist creation and management system, with advanced features for authentication, authorization, and product and event management.
-This repository represents the backend of the application, developed with Java 17 and Spring Boot. It was designed to be integrated with the frontend, which uses Angular and TypeScript. [most updated branch > DEVELOPER]
+Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.<br />
+WishlyApp is a wishlist creation and management system, with advanced features for authentication, authorization, and product and event management.<br />
+This repository represents the backend of the application, developed with Java 17 and Spring Boot. It was designed to be integrated with the frontend, which uses Angular and TypeScript.<br />
+[most updated branch > DEVELOPER]
 <br /><br />
 
 ## 💻 Technologies Used
@@ -9,9 +10,11 @@ Backend:
  - Java 17
  - Spring Boot Framework
  - Maven
+<br />
 Database:
  - H2 (in-memory, for local testing)
  - MySQL (in production, hosted on Amazon RDS)
+<br />
 Frontend:
  - Angular
  - TypeScript
@@ -22,15 +25,15 @@ Frontend:
 ## 🎯 Features
 <br />
 📶 Where we have the following functionalities:<br />
-- Wishlist Creation:
+- Wishlist Creation:<br />
 Users can create public or private wishlists by associating categories, products, and events;
-- Wishlist Subscription:
-Users can subscribe to public wishlists automatically;
+- Wishlist Subscription:<br />
+Users can subscribe to public wishlists automatically;<br />
 Subscriptions to private wishlists require owner approval;
-Product Recommendations;
-- Guests can recommend products to the wishlist owner.
+Product Recommendations;<br />
+- Guests can recommend products to the wishlist owner.<br />
 The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manage requests and approvals;
-- Event Creation:
+- Event Creation:<br />
 Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
 <br />
 <br />
@@ -51,6 +54,7 @@ Events can be created and associated with a specific wishlist, allowing for the 
  - The status of an event can be updated by the owner.
 <br />
 <br />
+
 ## 🛠️ Observations on the Code
 <br />
 The development of this project was started with the purpose of learning and applying backend and systems architecture concepts.<br />
