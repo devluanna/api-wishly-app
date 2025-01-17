@@ -23,7 +23,7 @@ Frontend:
 ## 🎯 Features
 <br />
 📶 Where we have the following functionalities:<br />
-**- Wishlist Creation:<br />**
+**- Wishlist Creation:**<br />
  - Users can create public or private wishlists by associating categories, products, and events;<br />
 **- Wishlist Subscription:<br />**
  - Users can subscribe to public wishlists automatically;<br />
