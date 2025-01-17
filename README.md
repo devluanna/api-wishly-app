@@ -2,13 +2,23 @@
 Backend API for 'Wishlyapp-frontend with Angular/Typescript' project.
 WishlyApp is a wishlist creation and management system, with advanced features for authentication, authorization, and product and event management.
 This repository represents the backend of the application, developed with Java 17 and Spring Boot. It was designed to be integrated with the frontend, which uses Angular and TypeScript. [most updated branch > DEVELOPER]
+<br /><br />
+
+## 💻 Technologies Used
+Backend:
+ - Java 17
+ - Spring Boot Framework
+ - Maven
+Database:
+ - H2 (in-memory, for local testing)
+ - MySQL (in production, hosted on Amazon RDS)
+Frontend:
+ - Angular
+ - TypeScript
+ - Repositório do Frontend: (https://github.com/devluanna/wishlyapp-frontend)
 <br />
-💻 Technologies used:
-- Maven
-- In-memory database using H2
-- Database Local/HOM MYSQL database (PROD in RDS on AWS)
 <br />
-<br />
+
 ## 🎯 Features
 <br />
 📶 Where we have the following functionalities:<br />
@@ -24,6 +34,7 @@ The recommendation flow uses AWS Lambda, Step Functions, and Amazon SQS to manag
 Events can be created and associated with a specific wishlist, allowing for the management of dates, categories, and participants;
 <br />
 <br />
+
 ## 📚 Business Rule
 <br />
 - Creating Wishlists:
@@ -361,18 +372,6 @@ classDiagram
     DashboardProducts  "1" --> "*" RequestsProducts
 
 ```
-<br />
-✨ This is a project for my personal development as FullStack, using Java on the backend, and Angular with Typescript on the front end
-<br />
-<br />
-💻 Technologies used in the frontend:<br />
-- Angular
-<br />
-- Typescript
-<br />
-✅ Front-End Repository: (https://github.com/devluanna/wishlyapp-frontend)
-<br />
-<br />
 
 Screen Login:<br/>
 ![image](https://github.com/user-attachments/assets/1ebf1c68-2b46-44ac-aaee-b39ef4ede902)
